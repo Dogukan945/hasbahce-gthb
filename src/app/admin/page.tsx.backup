@@ -1,0 +1,821 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { 
+  FaArrowLeft, 
+  FaSave, 
+  FaPlus, 
+  FaTrash, 
+  FaChartBar, 
+  FaEye, 
+  FaEdit, 
+  FaSearch,
+  FaUsers,
+  FaUtensils,
+  FaCalendar,
+  FaCog
+} from "react-icons/fa";
+import { setDailySpecial, getDailySpecial } from '@/data/dailySpecial';
+
+// Kolayca değiştirilebilir admin şifresi
+const ADMIN_PASSWORD = "123";
+
+// Günün yemeği verisi
+const initialDailySpecial = {
+  isim: "Kuzu Pirzola",
+  aciklama: "Taze kuzu etinden özel baharatlarla hazırlanan ızgara pirzola",
+  fiyat: "450",
+  ozelFiyat: true
+};
+
+// Tam menü verisi - tüm kategoriler
+const initialMenuData = {
+  kahvalti: {
+    isim: "KAHVALTI ÇEŞİTLERİ",
+    aciklama: "Günün en önemli öğünü için özel hazırlanan kahvaltı çeşitlerimiz",
+    urunler: [
+      { isim: "Serpme Kahvaltı", fiyat: "350", aciklama: "Zengin kahvaltı tabağı", stok: true },
+      { isim: "Kahvaltı Tabağı", fiyat: "350", aciklama: "Klasik kahvaltı", stok: true },
+      { isim: "Sahanda Yumurta", fiyat: "120", aciklama: "Taze yumurta", stok: true },
+      { isim: "Omlet", fiyat: "150", aciklama: "Özel omlet", stok: true },
+    ],
+  },
+  corbalar: {
+    isim: "ÇORBALAR",
+    aciklama: "Sıcak ve soğuk çorba çeşitleri",
+    urunler: [
+      { isim: "Mercimek Çorbası", fiyat: "80", aciklama: "Geleneksel mercimek", stok: true },
+      { isim: "Ezogelin Çorbası", fiyat: "80", aciklama: "Acılı ezogelin", stok: true },
+      { isim: "Tavuk Çorbası", fiyat: "90", aciklama: "Ev yapımı tavuk çorbası", stok: true },
+    ],
+  },
+  atistirmaliklar: {
+    isim: "ATIŞTIRMALIKLAR",
+    aciklama: "Hafif atıştırmalık çeşitleri",
+    urunler: [
+      { isim: "Humus", fiyat: "60", aciklama: "Nohut ezmesi", stok: true },
+      { isim: "Baba Ganuş", fiyat: "70", aciklama: "Patlıcan ezmesi", stok: true },
+      { isim: "Zeytin Tabağı", fiyat: "50", aciklama: "Karışık zeytin", stok: true },
+    ],
+  },
+  salatalar: {
+    isim: "SALATALAR",
+    aciklama: "Taze ve sağlıklı salata çeşitleri",
+    urunler: [
+      { isim: "Çoban Salata", fiyat: "80", aciklama: "Klasik çoban salata", stok: true },
+      { isim: "Sezar Salata", fiyat: "120", aciklama: "Tavuklu sezar salata", stok: true },
+      { isim: "Gavurdağı Salata", fiyat: "90", aciklama: "Acılı gavurdağı", stok: true },
+    ],
+  },
+  anaYemekler: {
+    isim: "ANA YEMEKLER (Izgara & Kebap)",
+    aciklama: "Özel baharatlarla hazırlanan ızgara ve kebap çeşitleri",
+    urunler: [
+      { isim: "Kuzu Pirzola", fiyat: "450", aciklama: "Taze kuzu pirzola", stok: true },
+      { isim: "Adana Kebap", fiyat: "320", aciklama: "Geleneksel Adana kebap", stok: true },
+      { isim: "Urfa Kebap", fiyat: "320", aciklama: "Acısız Urfa kebap", stok: true },
+      { isim: "Saç Kavurma", fiyat: "380", aciklama: "Özel saç kavurma", stok: true },
+      { isim: "Kuzu Tandır", fiyat: "420", aciklama: "Geleneksel tandır", stok: true },
+    ],
+  },
+  tavukBalik: {
+    isim: "ANA YEMEKLER (Tavuk, Balık, Güveç)",
+    aciklama: "Tavuk, balık ve güveç çeşitleri",
+    urunler: [
+      { isim: "Kiremitte Tavuk", fiyat: "300", aciklama: "Özel soslu tavuk", stok: true },
+      { isim: "Kiremitte Balık", fiyat: "450", aciklama: "Taze balık", stok: true },
+      { isim: "Tavuk Şiş", fiyat: "280", aciklama: "Izgara tavuk şiş", stok: true },
+      { isim: "Kuzu Güveç", fiyat: "380", aciklama: "Geleneksel güveç", stok: true },
+    ],
+  },
+  pideler: {
+    isim: "🫓 PİDELER",
+    aciklama: "Geleneksel Türk mutfağının vazgeçilmezi",
+    urunler: [
+      { isim: "Kıymalı Pide", fiyat: "260", aciklama: "Özel kıyma harcı", stok: true },
+      { isim: "Kaşarlı Pide", fiyat: "250", aciklama: "Bol kaşar peyniri", stok: true },
+      { isim: "Kuşbaşılı Pide", fiyat: "280", aciklama: "Kuşbaşı etli pide", stok: true },
+      { isim: "Sucuklu Pide", fiyat: "270", aciklama: "Sucuklu pide", stok: true },
+      { isim: "Yumurtalı Pide", fiyat: "240", aciklama: "Yumurtalı pide", stok: true },
+      { isim: "Karışık Pide", fiyat: "290", aciklama: "Karışık malzemeli", stok: true },
+    ],
+  },
+  tatlılar: {
+    isim: "TATLILAR",
+    aciklama: "Geleneksel Türk tatlıları",
+    urunler: [
+      { isim: "Künefe", fiyat: "120", aciklama: "Geleneksel künefe", stok: true },
+      { isim: "Baklava", fiyat: "150", aciklama: "Fıstıklı baklava", stok: true },
+      { isim: "Sütlaç", fiyat: "80", aciklama: "Fırın sütlaç", stok: true },
+    ],
+  },
+  sicakIcecekler: {
+    isim: "SICAK İÇECEKLER",
+    aciklama: "Sıcak içecek çeşitleri",
+    urunler: [
+      { isim: "Çay", fiyat: "15", aciklama: "Demli çay", stok: true },
+      { isim: "Kahve", fiyat: "25", aciklama: "Türk kahvesi", stok: true },
+      { isim: "Nescafe", fiyat: "30", aciklama: "3'ü 1 arada", stok: true },
+    ],
+  },
+  sogukIcecekler: {
+    isim: "SOĞUK İÇECEKLER",
+    aciklama: "Soğuk içecek çeşitleri",
+    urunler: [
+      { isim: "Ayran", fiyat: "20", aciklama: "Taze ayran", stok: true },
+      { isim: "Kola", fiyat: "25", aciklama: "Gazlı içecek", stok: true },
+      { isim: "Su", fiyat: "10", aciklama: "Şişe su", stok: true },
+    ],
+  },
+};
+
+// Analytics verisi
+const initialAnalytics = {
+  toplamUrun: Object.values(initialMenuData).reduce((acc, cat) => acc + cat.urunler.length, 0),
+  toplamKategori: Object.keys(initialMenuData).length,
+  stoktaUrun: Object.values(initialMenuData).reduce((acc, cat) => 
+    acc + cat.urunler.filter(urun => urun.stok).length, 0),
+  stokDisiUrun: Object.values(initialMenuData).reduce((acc, cat) => 
+    acc + cat.urunler.filter(urun => !urun.stok).length, 0),
+  ortalamaFiyat: Math.round(
+    Object.values(initialMenuData).reduce((acc, cat) => 
+      acc + cat.urunler.reduce((sum, urun) => sum + parseInt(urun.fiyat), 0), 0
+    ) / Object.values(initialMenuData).reduce((acc, cat) => acc + cat.urunler.length, 0)
+  ),
+  sonGuncelleme: new Date().toLocaleDateString('tr-TR'),
+};
+
+export default function AdminPage() {
+  // Şifreli giriş için state'ler
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [tries, setTries] = useState(0);
+  const [lockUntil, setLockUntil] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Menü yönetimi için state'ler
+  const [menuData, setMenuData] = useState(initialMenuData);
+  const [activeCategory, setActiveCategory] = useState("dashboard");
+  const [dailySpecial, setDailySpecialState] = useState(initialDailySpecial);
+  const [analytics, setAnalytics] = useState(initialAnalytics);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState("category"); // "category" veya "all"
+
+  // Günün yemeği kaydetme fonksiyonu
+  const saveDailySpecial = () => {
+    setDailySpecial(dailySpecial);
+    alert("Günün yemeği kaydedildi!");
+  };
+
+  // Tüm menüyü kaydetme fonksiyonu
+  const saveAllMenu = () => {
+    // LocalStorage'a kaydet
+    localStorage.setItem('hasbahce_menu_data', JSON.stringify(menuData));
+    // Analytics'i güncelle
+    const newAnalytics = {
+      toplamUrun: Object.values(menuData).reduce((acc, cat) => acc + cat.urunler.length, 0),
+      toplamKategori: Object.keys(menuData).length,
+      stoktaUrun: Object.values(menuData).reduce((acc, cat) => 
+        acc + cat.urunler.filter(urun => urun.stok).length, 0),
+      stokDisiUrun: Object.values(menuData).reduce((acc, cat) => 
+        acc + cat.urunler.filter(urun => !urun.stok).length, 0),
+      ortalamaFiyat: Math.round(
+        Object.values(menuData).reduce((acc, cat) => 
+          acc + cat.urunler.reduce((sum, urun) => sum + parseInt(urun.fiyat), 0), 0
+        ) / Object.values(menuData).reduce((acc, cat) => acc + cat.urunler.length, 0)
+      ),
+      sonGuncelleme: new Date().toLocaleDateString('tr-TR'),
+    };
+    setAnalytics(newAnalytics);
+    alert("Tüm menü kaydedildi!");
+  };
+
+  // Şifre kontrol fonksiyonu
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+    // Her yanlışta 1 saniye gecikme
+    await new Promise((res) => setTimeout(res, 1000));
+    if (lockUntil && Date.now() < lockUntil) {
+      setError("Çok fazla yanlış deneme! Lütfen biraz bekleyin.");
+      setIsLoading(false);
+      return;
+    }
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      setPassword("");
+      setTries(0);
+      setError("");
+    } else {
+      const newTries = tries + 1;
+      setTries(newTries);
+      setError("Şifre yanlış!");
+      if (newTries >= 3) {
+        setLockUntil(Date.now() + 60 * 1000); // 1 dakika kilit
+        setError("Çok fazla yanlış deneme! 1 dakika bekleyin.");
+        setTries(0);
+      }
+    }
+    setIsLoading(false);
+  };
+
+  // Ürün ekleme
+  const addItem = (category) => {
+    const newItem = { 
+      isim: "Yeni Ürün", 
+      fiyat: "100", 
+      aciklama: "Ürün açıklaması", 
+      stok: true 
+    };
+    setMenuData((prev) => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        urunler: [...prev[category].urunler, newItem],
+      },
+    }));
+  };
+
+  // Ürün silme
+  const deleteItem = (category, index) => {
+    if (confirm("Bu ürünü silmek istediğinizden emin misiniz?")) {
+      setMenuData((prev) => ({
+        ...prev,
+        [category]: {
+          ...prev[category],
+          urunler: prev[category].urunler.filter((_, i) => i !== index),
+        },
+      }));
+    }
+  };
+
+  // Ürün güncelleme
+  const updateItem = (category, index, field, value) => {
+    setMenuData((prev) => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        urunler: prev[category].urunler.map((item, i) =>
+          i === index ? { ...item, [field]: value } : item
+        ),
+      },
+    }));
+  };
+
+  // Stok durumu değiştirme
+  const toggleStock = (category, index) => {
+    setMenuData((prev) => ({
+      ...prev,
+      [category]: {
+        ...prev[category],
+        urunler: prev[category].urunler.map((item, i) =>
+          i === index ? { ...item, stok: !item.stok } : item
+        ),
+      },
+    }));
+  };
+
+  // Arama fonksiyonu
+  const filteredProducts = searchTerm 
+    ? Object.entries(menuData).flatMap(([categoryKey, category]) =>
+        category.urunler
+          .filter(urun => 
+            urun.isim.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            urun.aciklama.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+          .map(urun => ({ ...urun, categoryKey, categoryName: category.isim }))
+      )
+    : [];
+
+  // Şifreli giriş ekranı
+  if (!isAuthenticated) {
+    const remaining = lockUntil && Date.now() < lockUntil
+      ? Math.ceil((lockUntil - Date.now()) / 1000)
+      : 0;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <form onSubmit={handleLogin} className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+          <h2 className="text-2xl font-bold mb-6 text-center">Yönetici Girişi</h2>
+          <label className="block mb-2 font-medium">Şifre</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 border rounded-lg mb-4 focus:ring-2 focus:ring-red-500"
+            disabled={isLoading || remaining > 0}
+            autoFocus
+          />
+          {error && <div className="text-red-600 mb-2 text-sm">{error}</div>}
+          {remaining > 0 && (
+            <div className="text-orange-600 mb-2 text-sm">{remaining} saniye bekleyin...</div>
+          )}
+          <button
+            type="submit"
+            className="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700 disabled:opacity-60"
+            disabled={isLoading || remaining > 0}
+          >
+            {isLoading ? "Giriş Yapılıyor..." : "Giriş Yap"}
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  // Ana admin paneli
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <Link href="/" className="flex items-center text-red-600 hover:text-red-700">
+              <FaArrowLeft className="mr-2" /> Ana Sayfaya Dön
+            </Link>
+            <h1 className="text-2xl font-bold text-gray-800">Hasbahçe Admin Paneli</h1>
+            <button 
+              onClick={saveAllMenu}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+            >
+              <FaSave className="mr-2 inline" /> Tümünü Kaydet
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sol Menü */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-bold mb-4">Yönetim Paneli</h2>
+              <div className="space-y-2">
+                {/* Dashboard */}
+                <button
+                  onClick={() => setActiveCategory("dashboard")}
+                  className={`w-full text-left p-3 rounded-lg transition-colors ${
+                    activeCategory === "dashboard"
+                      ? "bg-red-600 text-white"
+                      : "bg-gray-100 hover:bg-gray-200"
+                  }`}
+                >
+                  📊 Dashboard
+                </button>
+                
+                {/* Günün Yemeği */}
+                <button
+                  onClick={() => setActiveCategory("gununYemegi")}
+                  className={`w-full text-left p-3 rounded-lg transition-colors ${
+                    activeCategory === "gununYemegi"
+                      ? "bg-red-600 text-white"
+                      : "bg-gray-100 hover:bg-gray-200"
+                  }`}
+                >
+                  🍽️ Günün Yemeği
+                </button>
+
+                {/* Tüm Ürünler */}
+                <button
+                  onClick={() => setActiveCategory("tumUrunler")}
+                  className={`w-full text-left p-3 rounded-lg transition-colors ${
+                    activeCategory === "tumUrunler"
+                      ? "bg-red-600 text-white"
+                      : "bg-gray-100 hover:bg-gray-200"
+                  }`}
+                >
+                  🍽️ Tüm Ürünler
+                </button>
+
+                <div className="border-t my-2"></div>
+
+                {/* Kategori Başlığı */}
+                <div className="text-sm font-semibold text-gray-600 mb-2">KATEGORİLER</div>
+
+                {/* Menü Kategorileri */}
+                {Object.keys(menuData).map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setActiveCategory(category)}
+                    className={`w-full text-left p-3 rounded-lg transition-colors text-sm ${
+                      activeCategory === category
+                        ? "bg-red-600 text-white"
+                        : "bg-gray-100 hover:bg-gray-200"
+                    }`}
+                  >
+                    {menuData[category].isim} ({menuData[category].urunler.length})
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Ana İçerik Alanı */}
+          <div className="lg:col-span-3">
+            {activeCategory === "dashboard" ? (
+              // Dashboard
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-6">📊 Dashboard</h2>
+                  
+                  {/* İstatistik Kartları */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                      <div className="flex items-center">
+                        <FaUtensils className="text-blue-600 text-2xl mr-3" />
+                        <div>
+                          <p className="text-sm text-blue-600 font-medium">Toplam Ürün</p>
+                          <p className="text-2xl font-bold text-blue-800">{analytics.toplamUrun}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                      <div className="flex items-center">
+                        <FaUsers className="text-green-600 text-2xl mr-3" />
+                        <div>
+                          <p className="text-sm text-green-600 font-medium">Kategori</p>
+                          <p className="text-2xl font-bold text-green-800">{analytics.toplamKategori}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                      <div className="flex items-center">
+                        <FaEye className="text-yellow-600 text-2xl mr-3" />
+                        <div>
+                          <p className="text-sm text-yellow-600 font-medium">Stokta</p>
+                          <p className="text-2xl font-bold text-yellow-800">{analytics.stoktaUrun}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-red-50 p-4 rounded-lg border border-red-200">
+                      <div className="flex items-center">
+                        <FaChartBar className="text-red-600 text-2xl mr-3" />
+                        <div>
+                          <p className="text-sm text-red-600 font-medium">Ort. Fiyat</p>
+                          <p className="text-2xl font-bold text-red-800">{analytics.ortalamaFiyat}₺</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Hızlı İşlemler */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-semibold mb-3">Hızlı İşlemler</h3>
+                      <div className="space-y-2">
+                        <button 
+                          onClick={() => setActiveCategory("gununYemegi")}
+                          className="w-full text-left p-2 bg-white rounded border hover:bg-gray-50"
+                        >
+                          🍽️ Günün Yemeğini Düzenle
+                        </button>
+                        <button 
+                          onClick={() => setActiveCategory("tumUrunler")}
+                          className="w-full text-left p-2 bg-white rounded border hover:bg-gray-50"
+                        >
+                          🍽️ Tüm Ürünleri Görüntüle
+                        </button>
+                        <button 
+                          onClick={saveAllMenu}
+                          className="w-full text-left p-2 bg-white rounded border hover:bg-gray-50"
+                        >
+                          💾 Tüm Değişiklikleri Kaydet
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-semibold mb-3">Son Güncelleme</h3>
+                      <p className="text-sm text-gray-600">{analytics.sonGuncelleme}</p>
+                      <div className="mt-3">
+                        <p className="text-xs text-gray-500">
+                          Stok Dışı: {analytics.stokDisiUrun} ürün
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : activeCategory === "tumUrunler" ? (
+              // Tüm Ürünler Görünümü
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold">🍽️ Tüm Ürünler</h2>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => setViewMode("category")}
+                      className={`px-3 py-1 rounded text-sm ${
+                        viewMode === "category" 
+                          ? "bg-red-600 text-white" 
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      Kategori
+                    </button>
+                    <button
+                      onClick={() => setViewMode("all")}
+                      className={`px-3 py-1 rounded text-sm ${
+                        viewMode === "all" 
+                          ? "bg-red-600 text-white" 
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      Tümü
+                    </button>
+                  </div>
+                </div>
+
+                {/* Arama */}
+                <div className="mb-6">
+                  <div className="relative">
+                    <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Ürün ara..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                    />
+                  </div>
+                </div>
+
+                {viewMode === "all" ? (
+                  // Tüm ürünler tek listede
+                  <div className="space-y-4">
+                    {Object.entries(menuData).map(([categoryKey, category]) => (
+                      <div key={categoryKey} className="border rounded-lg p-4">
+                        <h3 className="font-semibold text-lg mb-3 text-red-600">
+                          {category.isim}
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {category.urunler.map((item, index) => (
+                            <div key={index} className="border rounded p-3 bg-gray-50">
+                              <div className="flex justify-between items-start mb-2">
+                                <h4 className="font-medium">{item.isim}</h4>
+                                <div className="flex space-x-1">
+                                  <button
+                                    onClick={() => toggleStock(categoryKey, index)}
+                                    className={`px-2 py-1 text-xs rounded ${
+                                      item.stok 
+                                        ? "bg-green-100 text-green-800" 
+                                        : "bg-red-100 text-red-800"
+                                    }`}
+                                  >
+                                    {item.stok ? "Stokta" : "Tükendi"}
+                                  </button>
+                                  <button
+                                    onClick={() => deleteItem(categoryKey, index)}
+                                    className="px-2 py-1 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
+                                  >
+                                    <FaTrash />
+                                  </button>
+                                </div>
+                              </div>
+                              <p className="text-sm text-gray-600 mb-2">{item.aciklama}</p>
+                              <p className="font-bold text-lg">{item.fiyat}₺</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  // Kategori bazlı görünüm
+                  <div className="space-y-6">
+                    {Object.entries(menuData).map(([categoryKey, category]) => (
+                      <div key={categoryKey} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-center mb-4">
+                          <h3 className="font-semibold text-lg text-red-600">
+                            {category.isim}
+                          </h3>
+                          <button
+                            onClick={() => addItem(categoryKey)}
+                            className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                          >
+                            <FaPlus className="mr-1 inline" /> Ürün Ekle
+                          </button>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          {category.urunler.map((item, index) => (
+                            <div key={index} className="border rounded p-3 bg-gray-50">
+                              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                <div>
+                                  <label className="block text-xs font-medium text-gray-700 mb-1">Ürün Adı</label>
+                                  <input
+                                    type="text"
+                                    value={item.isim}
+                                    onChange={(e) => updateItem(categoryKey, index, "isim", e.target.value)}
+                                    className="w-full p-2 border rounded text-sm focus:ring-1 focus:ring-red-500"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-xs font-medium text-gray-700 mb-1">Fiyat (₺)</label>
+                                  <input
+                                    type="number"
+                                    value={item.fiyat}
+                                    onChange={(e) => updateItem(categoryKey, index, "fiyat", e.target.value)}
+                                    className="w-full p-2 border rounded text-sm focus:ring-1 focus:ring-red-500"
+                                  />
+                                </div>
+                                <div>
+                                  <label className="block text-xs font-medium text-gray-700 mb-1">Açıklama</label>
+                                  <input
+                                    type="text"
+                                    value={item.aciklama}
+                                    onChange={(e) => updateItem(categoryKey, index, "aciklama", e.target.value)}
+                                    className="w-full p-2 border rounded text-sm focus:ring-1 focus:ring-red-500"
+                                  />
+                                </div>
+                                <div className="flex items-end space-x-2">
+                                  <button
+                                    onClick={() => toggleStock(categoryKey, index)}
+                                    className={`px-3 py-2 text-sm rounded ${
+                                      item.stok 
+                                        ? "bg-green-100 text-green-800 hover:bg-green-200" 
+                                        : "bg-red-100 text-red-800 hover:bg-red-200"
+                                    }`}
+                                  >
+                                    {item.stok ? "Stokta" : "Tükendi"}
+                                  </button>
+                                  <button
+                                    onClick={() => deleteItem(categoryKey, index)}
+                                    className="px-3 py-2 text-sm bg-red-100 text-red-800 rounded hover:bg-red-200"
+                                  >
+                                    <FaTrash />
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : activeCategory === "gununYemegi" ? (
+              // Günün Yemeği Yönetimi
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-2xl font-bold mb-6">🍽️ Günün Yemeği</h2>
+                <div className="space-y-6">
+                  {/* Yemek Adı */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Yemek Adı</label>
+                    <input
+                      type="text"
+                      value={dailySpecial.isim}
+                      onChange={(e) => setDailySpecialState({...dailySpecial, isim: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 text-lg"
+                      placeholder="Örn: Kuzu Pirzola"
+                    />
+                  </div>
+                  
+                  {/* Açıklama */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Açıklama</label>
+                    <textarea
+                      value={dailySpecial.aciklama}
+                      onChange={(e) => setDailySpecialState({...dailySpecial, aciklama: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500"
+                      rows={3}
+                      placeholder="Yemeğin detaylı açıklaması"
+                    />
+                  </div>
+                  
+                  {/* Fiyat */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Fiyat (₺)</label>
+                    <input
+                      type="number"
+                      value={dailySpecial.fiyat}
+                      onChange={(e) => setDailySpecialState({...dailySpecial, fiyat: e.target.value})}
+                      className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-red-500 text-lg"
+                      placeholder="450"
+                    />
+                  </div>
+                  
+                  {/* Özel Fiyat */}
+                  <div>
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={dailySpecial.ozelFiyat}
+                        onChange={(e) => setDailySpecialState({...dailySpecial, ozelFiyat: e.target.checked})}
+                        className="mr-2 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                      />
+                      <span className="text-sm font-medium text-gray-700">Özel Fiyat Etiketi Göster</span>
+                    </label>
+                  </div>
+                  
+                  {/* Kaydet Butonu */}
+                  <div className="mt-6">
+                    <button
+                      onClick={saveDailySpecial}
+                      className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center"
+                    >
+                      <FaSave className="mr-2" />
+                      Günün Yemeğini Kaydet
+                    </button>
+                  </div>
+                  
+                  {/* Önizleme */}
+                  <div className="mt-8 p-4 bg-gradient-to-r from-red-600 to-red-700 rounded-lg text-white">
+                    <h3 className="text-lg font-semibold mb-2">Önizleme:</h3>
+                    <div className="bg-white/10 rounded p-4">
+                      <h4 className="text-xl font-bold mb-2">{dailySpecial.isim || "Yemek Adı"}</h4>
+                      <p className="mb-3 opacity-90">{dailySpecial.aciklama || "Açıklama"}</p>
+                      <div className="flex items-center space-x-4">
+                        <span className="text-2xl font-bold">{dailySpecial.fiyat || "0"}₺</span>
+                        {dailySpecial.ozelFiyat && (
+                          <span className="bg-yellow-400 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
+                            Özel Fiyat
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Normal Kategori Yönetimi
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold">{menuData[activeCategory].isim}</h2>
+                  <button
+                    onClick={() => addItem(activeCategory)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  >
+                    <FaPlus className="mr-2 inline" /> Yeni Ürün Ekle
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {menuData[activeCategory].urunler.map((item, index) => (
+                    <div key={index} className="border rounded-lg p-4">
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        {/* Ürün Adı */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Ürün Adı</label>
+                          <input
+                            type="text"
+                            value={item.isim}
+                            onChange={(e) => updateItem(activeCategory, index, "isim", e.target.value)}
+                            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                          />
+                        </div>
+                        {/* Fiyat */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Fiyat (₺)</label>
+                          <input
+                            type="number"
+                            value={item.fiyat}
+                            onChange={(e) => updateItem(activeCategory, index, "fiyat", e.target.value)}
+                            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                          />
+                        </div>
+                        {/* Açıklama */}
+                        <div className="md:col-span-2">
+                          <label className="block text-sm font-medium text-gray-700 mb-1">Açıklama</label>
+                          <input
+                            type="text"
+                            value={item.aciklama}
+                            onChange={(e) => updateItem(activeCategory, index, "aciklama", e.target.value)}
+                            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-red-500"
+                          />
+                        </div>
+                      </div>
+                      {/* Stok Durumu ve Sil Butonu */}
+                      <div className="mt-3 flex justify-between items-center">
+                        <button
+                          onClick={() => toggleStock(activeCategory, index)}
+                          className={`px-3 py-1 rounded text-sm ${
+                            item.stok 
+                              ? "bg-green-100 text-green-800 hover:bg-green-200" 
+                              : "bg-red-100 text-red-800 hover:bg-red-200"
+                          }`}
+                        >
+                          {item.stok ? "✅ Stokta" : "❌ Tükendi"}
+                        </button>
+                        <button
+                          onClick={() => deleteItem(activeCategory, index)}
+                          className="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700 text-sm"
+                        >
+                          <FaTrash className="mr-1 inline" /> Sil
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+} 
