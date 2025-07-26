@@ -37,7 +37,7 @@ export const NAVIGATION = {
 
 // ===== İLETİŞİM SABİTLERİ =====
 export const CONTACT_CONSTANTS = {
-  PHONE: '+90 358 123 45 67',
+  PHONE: '+90 358 213 05 93',
   LOCATION: {
     GOOGLE_MAPS: 'https://maps.google.com/?q=Hasbahçe+Restoran+Amasya',
     ADDRESS: 'Amasya Merkez, Yeşilırmak Mahallesi',
@@ -57,7 +57,7 @@ export const CONTACT_CONSTANTS = {
     ILETISIM: {
       TITLE: 'İletişim',
       DESCRIPTION: 'Telefon ile bilgi alabilirsiniz',
-      PHONE: '+90 358 123 45 67',
+      PHONE: '+90 358 213 05 93',
     },
   },
 } as const;

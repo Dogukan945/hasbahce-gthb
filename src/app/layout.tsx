@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import JsonLd from "@/components/JsonLd";
+import RestaurantJsonLd from "@/components/RestaurantJsonLd";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
@@ -70,6 +71,7 @@ export default function RootLayout({
       <body className={`${playfairDisplay.variable} ${inter.variable} font-sans antialiased`}>
         <GoogleAnalytics />
         <JsonLd />
+        <RestaurantJsonLd />
         {children}
         <Footer />
         <CookieConsent />
