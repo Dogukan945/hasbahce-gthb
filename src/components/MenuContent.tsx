@@ -6,13 +6,13 @@ import { useState, useMemo } from 'react';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import Navbar from './Navbar';
 import { MENU_CONSTANTS } from '@/lib/constants';
-import { menuCategories, categoryList } from '@/data/menuData';
+import { useMenuData } from '@/hooks/useMenuData';
 import type { SearchResult } from '@/lib/types';
 
 export default function MenuContent() {
+  const { menuCategories, categoryList, loading } = useMenuData();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [isLoading] = useState(false);
 
   // Arama fonksiyonu
   const searchResults = useMemo(() => {
@@ -38,7 +38,7 @@ export default function MenuContent() {
     });
 
     return results;
-  }, [searchTerm]);
+  }, [searchTerm, menuCategories, categoryList]);
 
   const clearSearch = () => {
     setSearchTerm('');
@@ -138,7 +138,7 @@ export default function MenuContent() {
 
         {/* Menü İçeriği */}
         <div className="max-w-6xl mx-auto px-4 pb-16">
-          {isLoading ? (
+          {loading ? (
             <div className="space-y-8">
               {[...Array(4)].map((_, i) => (
                 <SkeletonLoader key={i} type="category" />

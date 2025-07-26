@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useMenuData } from '@/hooks/useMenuData';
 import MenuCarousel from './MenuCarousel';
 import type { DailySpecial } from '@/lib/types';
 
@@ -7,46 +8,63 @@ interface MenuPreviewProps {
 }
 
 export default function MenuPreview({ dailySpecial }: MenuPreviewProps) {
-  // Her kategoriden popüler ürünler
+  const { menuCategories, loading } = useMenuData();
+
+  // Firebase'den güncel fiyatları al
+  const getCurrentPrice = (itemName: string, defaultPrice: string) => {
+    if (loading || !menuCategories) return defaultPrice;
+    
+    // Tüm kategorilerde bu ürünü ara
+    for (const categoryKey of Object.keys(menuCategories)) {
+      const category = menuCategories[categoryKey as keyof typeof menuCategories];
+      const item = category.items.find(item => item.name === itemName);
+      if (item) {
+        return item.price;
+      }
+    }
+    return defaultPrice;
+  };
+
+  // Her kategoriden popüler ürünler (güncel fiyatlarla)
   const featuredItems = [
     {
       name: 'Kıymalı Pide',
-      price: '260₺',
+      price: getCurrentPrice('Kıymalı Pide', '260₺'),
       description: 'Özel kıyma harcı ile hazırlanan geleneksel Türk pidesi',
       category: 'PİDELER',
       popular: true
     },
     {
       name: 'Adana Kebap',
-      price: '320₺',
+      price: getCurrentPrice('Adana Kebap', '320₺'),
       description: 'Acılı, bol baharatlı, közde pişmiş Adana usulü kebap',
       category: 'ANA YEMEKLER',
       popular: true
     },
     {
       name: 'Kaşarlı Gözleme',
-      price: '160₺',
+      price: getCurrentPrice('Gözleme', '160₺'),
       description: 'Taze açılmış hamurda bol kaşar ile hazırlanan gözleme',
       category: 'ATIŞTIRMALIKLAR',
       popular: true
     },
     {
       name: 'Kuzu Şiş',
-      price: '380₺',
+      price: getCurrentPrice('Kuzu Şiş', '380₺'),
       description: 'Izgarada pişmiş, yumuşacık kuzu şiş',
       category: 'ANA YEMEKLER',
       popular: true
     },
     {
       name: 'Künefe',
-      price: '150₺',
+      price: getCurrentPrice('Künefe', '150₺'),
       description: 'Sıcak künefe, Antep fıstığı ve özel şerbeti ile',
       category: 'TATLILAR',
       popular: true
     },
     {
       name: 'Milkshake',
-      price: '90₺',
+      price: getCurrentPrice('Milkshake', '90₺'),
       description: 'Soğuk, ferahlatıcı, bol sütlü milkshake',
       category: 'SOĞUK İÇECEKLER',
       popular: true
@@ -71,15 +89,15 @@ export default function MenuPreview({ dailySpecial }: MenuPreviewProps) {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="item-name">Serpme Kahvaltı</span>
-                  <span className="price">350₺</span>
+                  <span className="price">{getCurrentPrice('Serpme Kahvaltı', '350₺')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="item-name">Sahanda Yumurta</span>
-                  <span className="price">120₺</span>
+                  <span className="price">{getCurrentPrice('Sahanda Yumurta / Omlet', '120₺')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="item-name">Menemen</span>
-                  <span className="price">180₺</span>
+                  <span className="price">{getCurrentPrice('Menemen', '180₺')}</span>
                 </div>
               </div>
             </div>
@@ -93,15 +111,15 @@ export default function MenuPreview({ dailySpecial }: MenuPreviewProps) {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="item-name">Kuzu Pirzola</span>
-                  <span className="price">450₺</span>
+                  <span className="price">{getCurrentPrice('Kuzu Pirzola', '450₺')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="item-name">Saç Kavurma</span>
-                  <span className="price">380₺</span>
+                  <span className="price">{getCurrentPrice('Saç Kavurma', '380₺')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="item-name">Adana Kebap</span>
-                  <span className="price">320₺</span>
+                  <span className="price">{getCurrentPrice('Adana Kebap', '320₺')}</span>
                 </div>
               </div>
             </div>
@@ -115,15 +133,15 @@ export default function MenuPreview({ dailySpecial }: MenuPreviewProps) {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="item-name">Kıymalı Pide</span>
-                  <span className="price">260₺</span>
+                  <span className="price">{getCurrentPrice('Kıymalı Pide', '260₺')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="item-name">Kaşarlı Pide</span>
-                  <span className="price">250₺</span>
+                  <span className="price">{getCurrentPrice('Kaşarlı Pide', '250₺')}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="item-name">Bafra Pidesi</span>
-                  <span className="price">270₺</span>
+                  <span className="price">{getCurrentPrice('Bafra Pidesi', '270₺')}</span>
                 </div>
               </div>
             </div>
