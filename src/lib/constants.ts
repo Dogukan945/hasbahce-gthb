@@ -14,6 +14,7 @@ export const TAB_NAMES = {
   DAILY_SPECIAL: 'dailySpecial',
   CATEGORIES: 'categories', 
   PRODUCTS: 'products',
+  MENU_PRICES: 'menuPrices',
 } as const;
 
 // ===== TOAST TİPLERİ =====
@@ -259,9 +260,56 @@ export const MENU_CONSTANTS = {
 export const FIREBASE_CONSTANTS = {
   COLLECTIONS: {
     DAILY_SPECIAL: 'dailySpecial',
+    MENU_PRICES: 'menuPrices',
   },
   DOCUMENTS: {
     CURRENT: 'current',
+    PRICES: 'prices',
+  },
+} as const;
+
+// ===== MENÜ FİYATLARI SABİTLERİ =====
+export const MENU_PRICE_CONSTANTS = {
+  // Tab adı
+  TAB_NAME: 'menuPrices',
+  
+  // Mesajlar
+  MESSAGES: {
+    LOADING: 'Menü fiyatları yükleniyor...',
+    SAVING: 'Fiyatlar kaydediliyor...',
+    SAVE_SUCCESS: 'Menü fiyatları başarıyla güncellendi!',
+    SAVE_ERROR: 'Fiyatlar kaydedilirken hata oluştu!',
+    RESET_SUCCESS: 'Fiyatlar varsayılan değerlere sıfırlandı!',
+    RESET_CONFIRM: 'Tüm fiyatları varsayılan değerlere sıfırlamak istediğinizden emin misiniz?',
+  },
+  
+  // Buton metinleri
+  BUTTONS: {
+    SAVE_ALL: 'Tüm Fiyatları Kaydet',
+    RESET_ALL: 'Varsayılan Fiyatlara Sıfırla',
+    EXPAND_ALL: 'Tümünü Genişlet',
+    COLLAPSE_ALL: 'Tümünü Daralt',
+  },
+  
+  // Form etiketleri
+  LABELS: {
+    CATEGORY: 'Kategori',
+    ITEM_NAME: 'Ürün Adı',
+    CURRENT_PRICE: 'Mevcut Fiyat',
+    NEW_PRICE: 'Yeni Fiyat',
+    ORIGINAL_PRICE: 'Orijinal Fiyat',
+  },
+  
+  // Placeholder metinleri
+  PLACEHOLDERS: {
+    PRICE: 'Fiyat giriniz (örn: 150 TL)',
+  },
+  
+  // Validasyon mesajları
+  VALIDATION: {
+    PRICE_REQUIRED: 'Fiyat gereklidir',
+    PRICE_FORMAT: 'Geçerli bir fiyat formatı giriniz (örn: 150 TL)',
+    PRICE_POSITIVE: 'Fiyat pozitif olmalıdır',
   },
 } as const;
 

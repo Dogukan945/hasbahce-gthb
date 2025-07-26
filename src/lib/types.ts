@@ -39,6 +39,23 @@ export interface EditingDailySpecial {
   aktif: boolean;
 }
 
+// Menü fiyatları yönetimi için tipler
+export interface MenuPriceItem {
+  name: string;
+  price: string;
+  originalPrice: string; // Orijinal fiyatı saklamak için
+}
+
+export interface MenuPriceCategory {
+  name: string;
+  description: string;
+  items: MenuPriceItem[];
+}
+
+export interface MenuPrices {
+  [categoryKey: string]: MenuPriceCategory;
+}
+
 // Form validation error tipi
 export interface ValidationErrors {
   [key: string]: string;

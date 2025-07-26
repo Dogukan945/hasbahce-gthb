@@ -1,4 +1,5 @@
 "use client";
+import { useState } from 'react';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { useToast } from '@/hooks/useToast';
 import { useDailySpecialForm } from '@/hooks/useDailySpecialManagement';
@@ -7,9 +8,13 @@ import AdminHeader from '@/components/admin/AdminHeader';
 import ToastNotifications from '@/components/admin/ToastNotifications';
 import DailySpecialForm from '@/components/DailySpecialForm';
 import DailySpecialPreview from '@/components/DailySpecialPreview';
-import { INFO_MESSAGES, TOAST_TYPES, SUCCESS_MESSAGES } from '@/lib/constants';
+import MenuPriceManager from '@/components/admin/MenuPriceManager';
+import { INFO_MESSAGES, TOAST_TYPES, SUCCESS_MESSAGES, TAB_NAMES } from '@/lib/constants';
+import type { TabType } from '@/lib/types';
 
 export default function AdminPage() {
+  const [activeTab, setActiveTab] = useState<TabType>(TAB_NAMES.DAILY_SPECIAL);
+  
   // Hook'ları kullan
   const { toasts, addToast } = useToast();
   const { 
@@ -50,6 +55,17 @@ export default function AdminPage() {
     setIsPreviewMode(!isPreviewMode);
   };
 
+  // Tab değiştirme fonksiyonu
+  const handleTabChange = (tab: TabType) => {
+    if (hasUnsavedChanges) {
+      if (confirm(INFO_MESSAGES.UNSAVED_CHANGES)) {
+        setActiveTab(tab);
+      }
+    } else {
+      setActiveTab(tab);
+    }
+  };
+
   // Şifreli giriş ekranı
   if (!isAuthenticated) {
     return (
@@ -61,7 +77,40 @@ export default function AdminPage() {
     );
   }
 
-  // Admin paneli ana ekranı (sadece Günün Yemeği)
+  // Tab listesi
+  const tabs = [
+    { id: TAB_NAMES.DAILY_SPECIAL, label: 'Günün Yemeği' },
+    { id: TAB_NAMES.MENU_PRICES, label: 'Menü Fiyatları' },
+  ];
+
+  // Tab içeriği render fonksiyonu
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case TAB_NAMES.DAILY_SPECIAL:
+        return (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <DailySpecialForm
+              editingDailySpecial={editingDailySpecial}
+              onFieldChange={handleFieldChange}
+              onSave={handleSaveDailySpecial}
+              onReset={handleResetDailySpecial}
+              hasUnsavedChanges={hasUnsavedChanges}
+              isUpdating={isDailySpecialUpdating}
+              validationErrors={validationErrors}
+            />
+            <DailySpecialPreview editingDailySpecial={editingDailySpecial} />
+          </div>
+        );
+      
+      case TAB_NAMES.MENU_PRICES:
+        return <MenuPriceManager />;
+      
+      default:
+        return null;
+    }
+  };
+
+  // Admin paneli ana ekranı
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Toast Notifications */}
@@ -74,19 +123,30 @@ export default function AdminPage() {
         onLogout={onLogout}
       />
       
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <DailySpecialForm
-            editingDailySpecial={editingDailySpecial}
-            onFieldChange={handleFieldChange}
-            onSave={handleSaveDailySpecial}
-            onReset={handleResetDailySpecial}
-            hasUnsavedChanges={hasUnsavedChanges}
-            isUpdating={isDailySpecialUpdating}
-            validationErrors={validationErrors}
-          />
-          <DailySpecialPreview editingDailySpecial={editingDailySpecial} />
+      <main className="max-w-6xl mx-auto px-4 py-8">
+        {/* Tab Navigation */}
+        <div className="mb-8">
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabChange(tab.id)}
+                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === tab.id
+                      ? 'border-green-500 text-green-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          </div>
         </div>
+
+        {/* Tab Content */}
+        {renderTabContent()}
       </main>
     </div>
   );
