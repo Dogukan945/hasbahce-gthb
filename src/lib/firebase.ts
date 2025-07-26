@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, type Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -10,5 +10,25 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app); 
+// Environment variables eksikse Firebase'i başlatma
+let app;
+let db: Firestore | undefined;
+
+try {
+  // Tüm gerekli environment variables mevcut mu kontrol et
+  if (firebaseConfig.apiKey && 
+      firebaseConfig.authDomain && 
+      firebaseConfig.projectId && 
+      firebaseConfig.storageBucket && 
+      firebaseConfig.messagingSenderId && 
+      firebaseConfig.appId) {
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+  } else {
+    console.warn('Firebase environment variables eksik. Firebase devre dışı.');
+  }
+} catch (error) {
+  console.error('Firebase başlatma hatası:', error);
+}
+
+export { db }; 
