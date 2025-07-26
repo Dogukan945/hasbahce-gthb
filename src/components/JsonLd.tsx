@@ -47,7 +47,7 @@ export default function JsonLd({
     longitude: 35.8353
   }
 }: RestaurantSchemaProps) {
-  const schema = {
+  const restaurantSchema = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
     "name": name,
@@ -92,11 +92,40 @@ export default function JsonLd({
     ]
   };
 
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Hasbahçe",
+    "url": "https://hasbahceamasya.com",
+    "logo": "https://hasbahceamasya.com/hasbahce-logo.png",
+    "image": "https://hasbahceamasya.com/hasbahce-logo.png",
+    "description": "Amasya'da Yeşilırmak kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri sunan restoran.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": address.streetAddress,
+      "addressLocality": address.addressLocality,
+      "addressRegion": address.addressRegion,
+      "postalCode": address.postalCode,
+      "addressCountry": address.addressCountry
+    },
+    "telephone": telephone,
+    "sameAs": [
+      "https://hasbahceamasya.com"
+    ]
+  };
+
   return (
-    <Script
-      id="restaurant-schema"
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <>
+      <Script
+        id="restaurant-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantSchema) }}
+      />
+      <Script
+        id="organization-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+    </>
   );
 } 

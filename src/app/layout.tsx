@@ -21,6 +21,36 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Hasbahçe",
   description: "Hasbahçe, aile dostu bir lokanta olarak özenle hazırladığımız pide ve kebap çeşitlerimizle misafirlerimize samimi bir ortamda kaliteli lezzetler sunuyoruz.",
+  openGraph: {
+    type: "website",
+    locale: "tr_TR",
+    url: "https://hasbahceamasya.com",
+    siteName: "Hasbahçe",
+    title: "Hasbahçe | Amasya'nın En İyi Restoranı",
+    description: "Amasya'da Yeşilırmak kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri.",
+    images: [
+      {
+        url: "https://hasbahceamasya.com/hasbahce-logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Hasbahçe Restoran Amasya",
+        type: "image/png"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@hasbahceamasya",
+    creator: "@hasbahceamasya",
+    title: "Hasbahçe | Amasya'nın En İyi Restoranı",
+    description: "Amasya'da Yeşilırmak kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri.",
+    images: ["https://hasbahceamasya.com/hasbahce-logo.png"]
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/hasbahce-logo.png",
+  }
 };
 
 export default function RootLayout({
@@ -32,6 +62,10 @@ export default function RootLayout({
     <html lang="tr">
       <head>
         {/* Favicon otomatik olarak app/favicon.ico'dan yüklenir */}
+        <link rel="canonical" href="https://hasbahceamasya.com" />
+        <meta name="robots" content="index, follow" />
+        <meta name="author" content="Hasbahçe Restoran" />
+        <meta name="theme-color" content="#16a34a" />
       </head>
       <body className={`${playfairDisplay.variable} ${inter.variable} font-sans antialiased`}>
         <GoogleAnalytics />

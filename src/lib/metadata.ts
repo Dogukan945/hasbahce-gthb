@@ -13,13 +13,24 @@ export const defaultMetadata: Metadata = {
         url: "/hasbahce-logo.png",
         width: 1200,
         height: 630,
-        alt: "Hasbahçe Restoran Amasya - Geleneksel Türk Mutfağı"
+        alt: "Hasbahçe Restoran Amasya - Geleneksel Türk Mutfağı",
+        type: "image/png"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
+    site: "@hasbahceamasya",
+    creator: "@hasbahceamasya",
     images: ["/hasbahce-logo.png"]
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/hasbahce-logo.png",
+  },
+  other: {
+    "google-site-verification": "your-verification-code-here"
   }
 };
 
