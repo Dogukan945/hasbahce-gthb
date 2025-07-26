@@ -6,33 +6,41 @@ import { ANIMATION_CONSTANTS, COOKIE_CONSTANTS } from '@/lib/constants';
 
 export default function CookieConsent() {
   const [showConsent, setShowConsent] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    // localStorage'dan çerez durumunu kontrol et
-    const cookiesAccepted = localStorage.getItem(COOKIE_CONSTANTS.STORAGE_KEY);
-    if (!cookiesAccepted) {
-      setShowConsent(true);
+    setIsClient(true);
+    // localStorage'dan çerez durumunu kontrol et (sadece client-side'da)
+    if (typeof window !== 'undefined') {
+      const cookiesAccepted = localStorage.getItem(COOKIE_CONSTANTS.STORAGE_KEY);
+      if (!cookiesAccepted) {
+        setShowConsent(true);
+      }
     }
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem(COOKIE_CONSTANTS.STORAGE_KEY, 'true');
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(COOKIE_CONSTANTS.STORAGE_KEY, 'true');
+    }
     setShowConsent(false);
     
     // Google Analytics kodunu dinamik olarak ekle
-    const script1 = document.createElement('script');
-    script1.async = true;
-    script1.src = COOKIE_CONSTANTS.ANALYTICS.SCRIPT_URL;
-    document.head.appendChild(script1);
+    if (typeof document !== 'undefined') {
+      const script1 = document.createElement('script');
+      script1.async = true;
+      script1.src = COOKIE_CONSTANTS.ANALYTICS.SCRIPT_URL;
+      document.head.appendChild(script1);
 
-    const script2 = document.createElement('script');
-    script2.innerHTML = `
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '${COOKIE_CONSTANTS.ANALYTICS.ID}');
-    `;
-    document.head.appendChild(script2);
+      const script2 = document.createElement('script');
+      script2.innerHTML = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '${COOKIE_CONSTANTS.ANALYTICS.ID}');
+      `;
+      document.head.appendChild(script2);
+    }
   };
 
   const handleReject = () => {
@@ -40,8 +48,15 @@ export default function CookieConsent() {
   };
 
   const handleMoreInfo = () => {
-    window.open(COOKIE_CONSTANTS.MORE_INFO_URL, '_blank', 'noopener,noreferrer');
+    if (typeof window !== 'undefined') {
+      window.open(COOKIE_CONSTANTS.MORE_INFO_URL, '_blank', 'noopener,noreferrer');
+    }
   };
+
+  // Server-side rendering sırasında hiçbir şey render etme
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <AnimatePresence>
