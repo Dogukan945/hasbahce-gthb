@@ -25,9 +25,9 @@ interface RestaurantSchemaProps {
 
 export default function JsonLd({
   name = "Hasbahçe",
-  description = "Amasya'da nehir kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri sunan restoran",
+  description = "Amasya'da Yeşilırmak kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri sunan restoran. Amasya'nın en iyi restoranı.",
   address = {
-    streetAddress: "Örnek Mahallesi, Hasbahçe Sokak No:1",
+    streetAddress: "Yeşilırmak Mahallesi, Hasbahçe Sokak No:1",
     addressLocality: "Amasya",
     addressRegion: "Amasya",
     postalCode: "05000",
@@ -39,7 +39,7 @@ export default function JsonLd({
     "Mo-Su 07:00-23:00"
   ],
   priceRange = "₺₺",
-  servesCuisine = ["Turkish", "Kebab", "Pide", "Kahvaltı"],
+  servesCuisine = ["Turkish", "Kebab", "Pide", "Kahvaltı", "Izgara", "Tatlı"],
   hasMenu = "https://hasbahceamasya.com/menu",
   image = "https://hasbahceamasya.com/hasbahce-logo.png",
   geo = {
@@ -71,9 +71,25 @@ export default function JsonLd({
       "@type": "GeoCoordinates",
       "latitude": geo.latitude,
       "longitude": geo.longitude
-    }
-    // Not: aggregateRating ve sameAs kaldırıldı - sadece doğrulanabilir bilgiler
-    // Puanlama ve sosyal medya linkleri gerçek verilerle eklenecek
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "Amasya"
+    },
+    "paymentAccepted": ["Cash", "Credit Card"],
+    "currenciesAccepted": "TRY",
+    "amenityFeature": [
+      {
+        "@type": "LocationFeatureSpecification",
+        "name": "WiFi",
+        "value": true
+      },
+      {
+        "@type": "LocationFeatureSpecification", 
+        "name": "Parking",
+        "value": true
+      }
+    ]
   };
 
   return (

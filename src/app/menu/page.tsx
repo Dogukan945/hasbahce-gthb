@@ -3,8 +3,8 @@ import MenuJsonLd from '@/components/MenuJsonLd';
 import { createPageMetadata } from '@/lib/metadata';
 
 export const metadata = createPageMetadata({
-  title: "Menü | Hasbahçe Amasya",
-  description: "Hasbahçe menüsü: Kahvaltı, ana yemekler, pideler, tatlılar ve içecekler. Amasya'nın en lezzetli yemekleri burada!",
+  title: "Menü | Hasbahçe Amasya - Kahvaltı, Pide, Kebap, Tatlı Fiyatları",
+  description: "Hasbahçe menüsü ve fiyatları: Kahvaltı, ana yemekler, pideler, tatlılar ve içecekler. Amasya'nın en lezzetli yemekleri uygun fiyatlarla!",
   path: "/menu"
 });
 

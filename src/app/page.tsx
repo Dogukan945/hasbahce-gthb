@@ -2,8 +2,8 @@ import HomeContent from '@/components/HomeContent';
 import { createPageMetadata } from '@/lib/metadata';
 
 export const metadata = createPageMetadata({
-  title: "Hasbahçe | Amasya Restoran & Cafe",
-  description: "Amasya'da nehir kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri sunan Hasbahçe restoranın resmi web sitesi.",
+  title: "Hasbahçe | Amasya'nın En İyi Restoranı - Kahvaltı, Pide, Kebap",
+  description: "Amasya'da Yeşilırmak kenarında aile dostu ortamda kahvaltı, pide, kebap, ızgara ve geleneksel Türk yemekleri. Amasya'nın en iyi restoranı Hasbahçe'de rezervasyon yapın.",
   path: "/"
 });
 
