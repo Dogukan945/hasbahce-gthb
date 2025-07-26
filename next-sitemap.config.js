@@ -9,9 +9,6 @@ module.exports = {
         allow: '/',
         disallow: ['/admin', '/api/*']
       }
-    ],
-    additionalSitemaps: [
-      'https://hasbahceamasya.com/sitemap.xml'
     ]
   },
   changefreq: 'daily',
