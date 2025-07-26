@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://hasbahceamasya.com
+
+# Sitemaps
+Sitemap: https://hasbahceamasya.com/sitemap.xml

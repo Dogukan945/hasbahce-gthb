@@ -1,19 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
+import JsonLd from "@/components/JsonLd";
+import Footer from "@/components/Footer";
+import CookieConsent from "@/components/CookieConsent";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const playfairDisplay = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Hasbahçe - Aile Dostu Restoran",
+  title: "Hasbahçe",
   description: "Hasbahçe, aile dostu bir lokanta olarak özenle hazırladığımız pide ve kebap çeşitlerimizle misafirlerimize samimi bir ortamda kaliteli lezzetler sunuyoruz.",
 };
 
@@ -24,10 +29,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <head>
+        {/* Favicon otomatik olarak app/favicon.ico'dan yüklenir */}
+      </head>
+      <body className={`${playfairDisplay.variable} ${inter.variable} font-sans antialiased`}>
+        <JsonLd />
         {children}
+        <Footer />
+        <CookieConsent />
       </body>
     </html>
   );
