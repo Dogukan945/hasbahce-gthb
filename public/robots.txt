@@ -1,11 +1,4 @@
-# *
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /api/*
 
-# Host
-Host: https://hasbahceamasya.com
-
-# Sitemaps
 Sitemap: https://hasbahceamasya.com/sitemap.xml
