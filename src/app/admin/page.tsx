@@ -31,6 +31,7 @@ export default function AdminPage() {
     setIsPreviewMode,
     hasUnsavedChanges,
     isDailySpecialUpdating,
+    isLoading: isDailySpecialLoading,
     validationErrors,
     handleSaveDailySpecial,
     handleResetDailySpecial,
@@ -96,6 +97,7 @@ export default function AdminPage() {
               onReset={handleResetDailySpecial}
               hasUnsavedChanges={hasUnsavedChanges}
               isUpdating={isDailySpecialUpdating}
+              isLoading={isDailySpecialLoading}
               validationErrors={validationErrors}
             />
             <DailySpecialPreview editingDailySpecial={editingDailySpecial} />

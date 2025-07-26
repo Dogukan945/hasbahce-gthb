@@ -17,6 +17,7 @@ interface DailySpecialFormProps {
   onReset: () => void;
   hasUnsavedChanges: boolean;
   isUpdating: boolean;
+  isLoading?: boolean;
   validationErrors?: Record<string, string>;
 }
 
@@ -27,6 +28,7 @@ export default function DailySpecialForm({
   onReset,
   hasUnsavedChanges,
   isUpdating,
+  isLoading = false,
   validationErrors = {}
 }: DailySpecialFormProps) {
   const getFieldError = (fieldName: string) => {
@@ -39,6 +41,19 @@ export default function DailySpecialForm({
       ? `${baseClass} border-red-500 focus:ring-red-500` 
       : `${baseClass} border-gray-300 focus:ring-red-500`;
   };
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Günün yemeği yükleniyor...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mb-8">

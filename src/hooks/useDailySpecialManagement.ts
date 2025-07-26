@@ -6,7 +6,7 @@ import {
   ERROR_MESSAGES
 } from '@/lib/constants';
 import { dailySpecialSchema, validateForm } from '@/lib/validation';
-import { setDailySpecial } from '@/lib/dailySpecialRepository';
+import { setDailySpecial, getDailySpecial } from '@/lib/dailySpecialRepository';
 import type { EditingDailySpecial, ValidationErrors } from '@/lib/types';
 
 // Reducer action tipleri
@@ -35,6 +35,7 @@ export const useDailySpecialForm = (isAuthenticated: boolean, addToast: (type: '
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [isDailySpecialUpdating, setIsDailySpecialUpdating] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // useReducer ile form state yönetimi
   const [editingDailySpecial, dispatchEditingDailySpecial] = useReducer(
@@ -42,20 +43,54 @@ export const useDailySpecialForm = (isAuthenticated: boolean, addToast: (type: '
     DEFAULT_DAILY_SPECIAL
   );
 
-  // Günün yemeği verilerini düzenleme state'ine yükle (statik örnek)
+  // Firebase'den günün yemeği verilerini yükle
   useEffect(() => {
-    if (isAuthenticated) {
-      dispatchEditingDailySpecial({
-        type: 'load',
-        payload: DEFAULT_DAILY_SPECIAL
-      });
-    }
+    const loadDailySpecial = async () => {
+      if (isAuthenticated) {
+        setIsLoading(true);
+        try {
+          const dailySpecial = await getDailySpecial();
+          if (dailySpecial) {
+            // Firebase'den gelen veriyi form formatına çevir
+            dispatchEditingDailySpecial({
+              type: 'load',
+              payload: {
+                isim: dailySpecial.isim,
+                aciklama: dailySpecial.aciklama,
+                fiyat: dailySpecial.fiyat.toString(),
+                ozelFiyat: dailySpecial.ozelFiyat,
+                aktif: dailySpecial.aktif
+              }
+            });
+          } else {
+            // Firebase'de veri yoksa varsayılan değerleri kullan
+            dispatchEditingDailySpecial({
+              type: 'load',
+              payload: DEFAULT_DAILY_SPECIAL
+            });
+          }
+        } catch (error) {
+          console.error('Günün yemeği yüklenirken hata:', error);
+          // Hata durumunda varsayılan değerleri kullan
+          dispatchEditingDailySpecial({
+            type: 'load',
+            payload: DEFAULT_DAILY_SPECIAL
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadDailySpecial();
   }, [isAuthenticated]);
 
   // Değişiklik kontrolü
   useEffect(() => {
-    setHasUnsavedChanges(true); // Her değişiklikte true
-  }, [editingDailySpecial]);
+    if (!isLoading) {
+      setHasUnsavedChanges(true); // Her değişiklikte true
+    }
+  }, [editingDailySpecial, isLoading]);
 
   // Form doğrulama
   const validateFormData = useCallback((data: EditingDailySpecial): boolean => {
@@ -126,6 +161,7 @@ export const useDailySpecialForm = (isAuthenticated: boolean, addToast: (type: '
     setIsPreviewMode,
     hasUnsavedChanges,
     isDailySpecialUpdating,
+    isLoading,
     validationErrors,
     handleSaveDailySpecial,
     handleResetDailySpecial,

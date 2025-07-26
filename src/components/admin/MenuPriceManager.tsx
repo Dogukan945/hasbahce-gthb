@@ -247,11 +247,6 @@ export default function MenuPriceManager() {
                             >
                               <div className="flex-1 min-w-0">
                                 <div className="font-medium text-gray-900 truncate">{item.name}</div>
-                                {hasChanged && (
-                                  <div className="text-xs text-orange-600 mt-1">
-                                    Orijinal: {item.originalPrice}
-                                  </div>
-                                )}
                               </div>
                               
                               <div className="flex items-center gap-2">
