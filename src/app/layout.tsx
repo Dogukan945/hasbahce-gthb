@@ -4,6 +4,7 @@ import "./globals.css";
 import JsonLd from "@/components/JsonLd";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair",
@@ -33,6 +34,7 @@ export default function RootLayout({
         {/* Favicon otomatik olarak app/favicon.ico'dan yüklenir */}
       </head>
       <body className={`${playfairDisplay.variable} ${inter.variable} font-sans antialiased`}>
+        <GoogleAnalytics />
         <JsonLd />
         {children}
         <Footer />
