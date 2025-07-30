@@ -97,8 +97,6 @@ export default function JsonLd({
     "@type": "Organization",
     "name": "Hasbahçe",
     "url": "https://hasbahceamasya.com",
-    "logo": "https://hasbahceamasya.com/hasbahce-logo.png",
-    "image": "https://hasbahceamasya.com/hasbahce-logo.png",
     "description": "Amasya'da Yeşilırmak kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri sunan restoran.",
     "address": {
       "@type": "PostalAddress",
