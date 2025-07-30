@@ -45,15 +45,17 @@ export const metadata: Metadata = {
     creator: "@hasbahceamasya",
     title: "Hasbahçe | Amasya'nın En İyi Restoranı",
     description: "Amasya'da Yeşilırmak kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri.",
-    images: ["https://hasbahceamasya.com/hasbahce-logo.png"]
+    images: ["https://hasbahceamasya.com/hasbahce-logo.png"],
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" }
-    ]
-  }
+      { url: "/favicon.ico", sizes: "any", type: "image/x-icon" },
+      { url: "/icon1.png", type: "image/png" }, // Yüksek çözünürlüklü PNG
+      { url: "/icon0.svg", type: "image/svg+xml" }, // En yüksek kaliteli vektörel ikon
+    ],
+    apple: "/apple-icon.png",
+  },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
@@ -64,7 +66,7 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <head>
-        {/* Favicon otomatik olarak app/favicon.ico'dan yüklenir */}
+        {/* Favicon otomatik olarak src/app/favicon.ico'dan yüklenir */}
         <link rel="canonical" href="https://hasbahceamasya.com" />
         <meta name="robots" content="index, follow" />
         <meta name="author" content="Hasbahçe Restoran" />
