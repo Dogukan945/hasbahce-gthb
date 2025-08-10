@@ -11,6 +11,9 @@ export const metadata = createPageMetadata({
 export default function AboutPage() {
   return (
     <>
+      <head>
+        <link rel="canonical" href="https://hasbahceamasya.com/about" />
+      </head>
       <Navbar />
       <AboutSection />
     </>

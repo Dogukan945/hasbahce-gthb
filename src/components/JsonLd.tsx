@@ -72,6 +72,7 @@ export default function JsonLd({
       "latitude": geo.latitude,
       "longitude": geo.longitude
     },
+    "hasMap": "https://maps.app.goo.gl/iAEQMt22wNkRqKJ87",
     "areaServed": {
       "@type": "City",
       "name": "Amasya"
@@ -92,37 +93,12 @@ export default function JsonLd({
     ]
   };
 
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Hasbahçe",
-    "url": "https://hasbahceamasya.com",
-    "description": "Amasya'da Yeşilırmak kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri sunan restoran.",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": address.streetAddress,
-      "addressLocality": address.addressLocality,
-      "addressRegion": address.addressRegion,
-      "postalCode": address.postalCode,
-      "addressCountry": address.addressCountry
-    },
-    "telephone": telephone,
-    "sameAs": [
-      "https://hasbahceamasya.com"
-    ]
-  };
-
   return (
     <>
       <Script
         id="restaurant-schema"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(restaurantSchema) }}
-      />
-      <Script
-        id="organization-schema"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
     </>
   );

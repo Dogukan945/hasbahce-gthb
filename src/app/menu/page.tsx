@@ -12,6 +12,9 @@ export default function MenuPage() {
   return (
     <>
       <MenuJsonLd />
+      <head>
+        <link rel="canonical" href="https://hasbahceamasya.com/menu" />
+      </head>
       <MenuContent />
     </>
   );

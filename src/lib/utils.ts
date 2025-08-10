@@ -97,6 +97,34 @@ export const formatPrice = (price: number): string => {
 };
 
 /**
+ * Fiyatları ekranda tutarlı göstermek için normalize eder.
+ * Kabul edilen formatlar: "350 TL", "350₺", "+10 TL", "350".
+ * Dönüş: "350 ₺", "+10 ₺" gibi.
+ */
+export const normalizePriceForDisplay = (rawPrice: string): string => {
+  if (!rawPrice) return '';
+
+  const trimmed = rawPrice.replace(/\s+/g, ' ').trim();
+
+  // +10 TL gibi eklemeler için işaret koru
+  const signMatch = trimmed.match(/^([+\-])\s*(.*)$/);
+  const sign = signMatch ? signMatch[1] + '' : '';
+  const numericPart = (signMatch ? signMatch[2] : trimmed)
+    .replace(/TL|₺/gi, '')
+    .replace(',', '.')
+    .trim();
+
+  const num = Number(numericPart);
+  if (Number.isFinite(num)) {
+    const formatted = `${Math.round(num).toLocaleString('tr-TR')} ₺`;
+    return `${sign}${formatted}`.trim();
+  }
+
+  // Sayısal değilse orijinali döndür
+  return trimmed;
+};
+
+/**
  * Sayıyı belirli aralıkta sınırla
  */
 export const clamp = (value: number, min: number, max: number): number => {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import JsonLd from "@/components/JsonLd";
-import RestaurantJsonLd from "@/components/RestaurantJsonLd";
+import WebsiteJsonLd from "@/components/WebsiteJsonLd";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
@@ -50,8 +50,9 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "any", type: "image/x-icon" },
-      { url: "/icon1.png", type: "image/png" }, // Yüksek çözünürlüklü PNG
-      { url: "/icon0.svg", type: "image/svg+xml" }, // En yüksek kaliteli vektörel ikon
+      { url: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/web-app-manifest-512x512.png", sizes: "512x512", type: "image/png" },
+      { url: "/icon1.png", type: "image/png" },
     ],
     apple: "/apple-icon.png",
   },
@@ -67,15 +68,14 @@ export default function RootLayout({
     <html lang="tr">
       <head>
         {/* Favicon otomatik olarak src/app/favicon.ico'dan yüklenir */}
-        <link rel="canonical" href="https://hasbahceamasya.com" />
-        <meta name="robots" content="index, follow" />
         <meta name="author" content="Hasbahçe Restoran" />
         <meta name="theme-color" content="#16a34a" />
+        <meta name="apple-mobile-web-app-title" content="Hasbahçe" />
       </head>
       <body className={`${playfairDisplay.variable} ${inter.variable} font-sans antialiased`}>
         <GoogleAnalytics />
+        <WebsiteJsonLd />
         <JsonLd />
-        <RestaurantJsonLd />
         {children}
         <Footer />
         <CookieConsent />

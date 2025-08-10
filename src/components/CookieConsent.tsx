@@ -24,22 +24,11 @@ export default function CookieConsent() {
       localStorage.setItem(COOKIE_CONSTANTS.STORAGE_KEY, 'true');
     }
     setShowConsent(false);
-    
-    // Google Analytics kodunu dinamik olarak ekle
-    if (typeof document !== 'undefined') {
-      const script1 = document.createElement('script');
-      script1.async = true;
-      script1.src = COOKIE_CONSTANTS.ANALYTICS.SCRIPT_URL;
-      document.head.appendChild(script1);
 
-      const script2 = document.createElement('script');
-      script2.innerHTML = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${COOKIE_CONSTANTS.ANALYTICS.ID}');
-      `;
-      document.head.appendChild(script2);
+    // GA yüklemesi, global GoogleAnalytics bileşeni tarafından yapılacak.
+    // Burada yalnızca kabul event'ini yayınlıyoruz.
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('cookie:accepted'));
     }
   };
 

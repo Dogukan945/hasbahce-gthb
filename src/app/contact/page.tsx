@@ -11,6 +11,9 @@ export const metadata = createPageMetadata({
 export default function ContactPage() {
   return (
     <>
+      <head>
+        <link rel="canonical" href="https://hasbahceamasya.com/contact" />
+      </head>
       <Navbar />
       <section className="py-12 bg-white">
         <div className="max-w-2xl mx-auto px-4 text-center mb-10">

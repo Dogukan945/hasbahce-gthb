@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { ADMIN_CONSTANTS } from '@/lib/constants';
 
 interface UseAdminAuthReturn {
   isAuthenticated: boolean;
@@ -16,31 +17,15 @@ export const useAdminAuth = (): UseAdminAuthReturn => {
   const login = useCallback(async (password: string) => {
     setError("");
     setIsLoading(true);
-    
     try {
-      const response = await fetch('/api/auth', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ password }),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data.success) {
+      // Basit, client-side kontrol (demo amaçlı). Production için gerçek auth gerekir.
+      await new Promise((r) => setTimeout(r, 300));
+      if (password && ADMIN_CONSTANTS.PASSWORD && password === ADMIN_CONSTANTS.PASSWORD) {
         setIsAuthenticated(true);
         setError("");
       } else {
-        setError(data.message || "Şifre yanlış!");
+        setError("Şifre yanlış!");
       }
-    } catch (error) {
-      console.error('Login error:', error);
-      setError("Bağlantı hatası! Lütfen tekrar deneyin.");
     } finally {
       setIsLoading(false);
     }

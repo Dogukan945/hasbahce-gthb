@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useMenuData } from '@/hooks/useMenuData';
 import MenuCarousel from './MenuCarousel';
 import type { DailySpecial } from '@/lib/types';
+import { normalizePriceForDisplay } from '@/lib/utils';
 
 interface MenuPreviewProps {
   dailySpecial: DailySpecial;
@@ -19,10 +20,10 @@ export default function MenuPreview({ dailySpecial }: MenuPreviewProps) {
       const category = menuCategories[categoryKey as keyof typeof menuCategories];
       const item = category.items.find(item => item.name === itemName);
       if (item) {
-        return item.price;
+        return normalizePriceForDisplay(item.price);
       }
     }
-    return defaultPrice;
+    return normalizePriceForDisplay(defaultPrice);
   };
 
   // Her kategoriden popüler ürünler (güncel fiyatlarla)

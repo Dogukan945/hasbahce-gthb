@@ -6,6 +6,7 @@ import { useState, useMemo } from 'react';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import Navbar from './Navbar';
 import { MENU_CONSTANTS } from '@/lib/constants';
+import { normalizePriceForDisplay } from '@/lib/utils';
 import { useMenuData } from '@/hooks/useMenuData';
 import type { SearchResult } from '@/lib/types';
 
@@ -162,7 +163,7 @@ export default function MenuContent() {
                               <h3 className="font-bold text-lg text-gray-800 group-hover:text-red-700 transition-colors duration-300">{item.name}</h3>
                             </div>
                             <div className="text-right">
-                              <span className="font-bold text-2xl text-green-600 group-hover:text-green-700 group-hover:scale-110 transition-all duration-300">{item.price}</span>
+                              <span className="font-bold text-2xl text-green-600 group-hover:text-green-700 group-hover:scale-110 transition-all duration-300">{normalizePriceForDisplay(item.price)}</span>
                             </div>
                           </div>
                         ))}
@@ -207,7 +208,7 @@ export default function MenuContent() {
                               <h3 className="font-bold text-lg text-gray-800 group-hover:text-red-700 transition-colors duration-300">{item.name}</h3>
                             </div>
                             <div className="text-right">
-                              <span className="font-bold text-2xl text-green-600 group-hover:text-green-700 group-hover:scale-110 transition-all duration-300">{item.price}</span>
+                              <span className="font-bold text-2xl text-green-600 group-hover:text-green-700 group-hover:scale-110 transition-all duration-300">{normalizePriceForDisplay(item.price)}</span>
                             </div>
                           </div>
                         ))}
@@ -236,7 +237,7 @@ export default function MenuContent() {
                               <h3 className="font-bold text-lg text-gray-800 group-hover:text-red-700 transition-colors duration-300">{item.name}</h3>
                             </div>
                             <div className="text-right">
-                              <span className="font-bold text-2xl text-green-600 group-hover:text-green-700 group-hover:scale-110 transition-all duration-300">{item.price}</span>
+                              <span className="font-bold text-2xl text-green-600 group-hover:text-green-700 group-hover:scale-110 transition-all duration-300">{normalizePriceForDisplay(item.price)}</span>
                             </div>
                           </div>
                         ))}

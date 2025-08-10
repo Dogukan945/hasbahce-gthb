@@ -11,6 +11,9 @@ export const metadata = createPageMetadata({
 export default function GalleryPage() {
   return (
     <>
+      <head>
+        <link rel="canonical" href="https://hasbahceamasya.com/gallery" />
+      </head>
       <Navbar />
       <GalleryContent />
     </>

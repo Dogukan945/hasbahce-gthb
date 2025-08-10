@@ -70,11 +70,16 @@ export default function AdminPage() {
   // Şifreli giriş ekranı
   if (!isAuthenticated) {
     return (
-      <AdminLoginForm
-        onLogin={login}
-        isLoading={isLoading}
-        error={error}
-      />
+      <>
+        <head>
+          <meta name="robots" content="noindex, nofollow" />
+        </head>
+        <AdminLoginForm
+          onLogin={login}
+          isLoading={isLoading}
+          error={error}
+        />
+      </>
     );
   }
 

@@ -12,13 +12,21 @@ import { INFO_MESSAGES, ANIMATION_CONSTANTS, CONTACT_CONSTANTS } from '@/lib/con
 export default function HomeContent() {
   const { dailySpecial, loading } = useDailySpecial();
 
-  if (loading || !dailySpecial) {
+  if (loading) {
     return <div className="min-h-screen flex items-center justify-center">{INFO_MESSAGES.LOADING}</div>;
   }
 
+  const effectiveDailySpecial = dailySpecial || {
+    isim: 'Günün Önerisi',
+    aciklama: 'Mutfağımızdan taze bir öneri',
+    fiyat: 0,
+    ozelFiyat: false,
+    aktif: true
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <HeroSection dailySpecial={dailySpecial} />
+      <HeroSection dailySpecial={effectiveDailySpecial} />
 
       {/* Öne Çıkan Özellikler - Mobil odaklı */}
       <section className="py-12 md:py-16 bg-gray-50">
@@ -68,7 +76,7 @@ export default function HomeContent() {
         </div>
       </section>
 
-      <MenuPreview dailySpecial={dailySpecial} />
+      <MenuPreview dailySpecial={effectiveDailySpecial} />
       <ContactSection />
     </div>
   );
