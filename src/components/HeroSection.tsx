@@ -16,16 +16,63 @@ interface HeroSectionProps {
 export default function HeroSection({ dailySpecial }: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [selectedSrc, setSelectedSrc] = useState<string>("/hero-video.mp4");
+  const [playEnabled, setPlayEnabled] = useState<boolean>(true);
 
   useEffect(() => {
-    if (videoRef.current) {
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(() => {
-          // Otomatik oynatma engellenirse sessizce yut
-        });
-      }
+    // Data saver / reduced data kontrolü
+    type NavigatorWithConnection = Navigator & { connection?: { saveData?: boolean } };
+    const nav = typeof navigator !== 'undefined' ? (navigator as NavigatorWithConnection) : undefined;
+    const saveData = !!(nav && nav.connection && nav.connection.saveData);
+    const prefersReducedData = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia('(prefers-reduced-data: reduce)').matches
+      : false;
+    if (saveData || prefersReducedData) {
+      setPlayEnabled(false);
+      return; // sadece poster gösterilecek
     }
+
+    // Ekran genişliğine göre kaynak seçimi
+    const width = typeof window !== 'undefined' ? window.innerWidth : 1280;
+    const candidates: string[] = width <= 640
+      ? ['/hero-video-480p.mp4', '/hero-video.mp4']
+      : width <= 1024
+        ? ['/hero-video-720p.mp4', '/hero-video.mp4']
+        : ['/hero-video.mp4'];
+
+    const pickFirstAvailable = async () => {
+      for (const src of candidates) {
+        try {
+          // HEAD ile var mı kontrol et
+          const res = await fetch(src, { method: 'HEAD' });
+          if (res.ok) {
+            setSelectedSrc(src);
+            break;
+          }
+        } catch {
+          // yoksay
+        }
+      }
+    };
+    pickFirstAvailable();
+
+    // Düşük güç / otomatik oynatma engellerine karşı kullanıcı etkileşiminden sonra başlat
+    const tryPlay = () => {
+      if (!videoRef.current) return;
+      const playPromise = videoRef.current.play();
+      if (playPromise && typeof (playPromise as Promise<void>).then === 'function') {
+        (playPromise as Promise<void>).catch(() => {/* sessizce yut */});
+      }
+      window.removeEventListener('touchstart', tryPlay);
+      window.removeEventListener('click', tryPlay);
+    };
+    tryPlay();
+    window.addEventListener('touchstart', tryPlay, { passive: true } as AddEventListenerOptions);
+    window.addEventListener('click', tryPlay, { passive: true } as AddEventListenerOptions);
+    return () => {
+      window.removeEventListener('touchstart', tryPlay);
+      window.removeEventListener('click', tryPlay);
+    };
   }, []);
 
   return (
@@ -39,16 +86,17 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
         <div className="absolute inset-0 z-0">
           <video
             ref={videoRef}
-            autoPlay
+            autoPlay={playEnabled}
             loop
             muted
             playsInline
             className="w-full h-full object-cover"
             onLoadedData={() => setVideoLoaded(true)}
             style={{ opacity: videoLoaded ? 1 : 0 }}
+            preload={playEnabled ? 'auto' : 'none'}
             poster="/hasbahce-logo.png"
           >
-            <source src="/hero-video.mp4" type="video/mp4" />
+            <source src={selectedSrc} type="video/mp4" />
           </video>
           {/* Video yüklenemezse veya mobilde fallback gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-red-600/80 via-red-700/60 to-red-800/80"></div>
