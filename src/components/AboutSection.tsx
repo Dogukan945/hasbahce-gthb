@@ -58,7 +58,7 @@ export default function AboutSection() {
     <section id="about" className="py-16 bg-white">
       <div className="max-w-5xl mx-auto px-4">
         <div className="mb-10 text-center">
-          <h2 className="heading-2 text-red-700 mb-4 tracking-tight">Hakkımızda</h2>
+          <h2 className="heading-2 text-red-700 mb-4 tracking-tight drop-shadow-sm">Hakkımızda</h2>
           <div className="body-text-large text-gray-700 max-w-3xl mx-auto leading-relaxed whitespace-pre-line bg-gray-50 rounded-xl p-6 shadow-sm border border-gray-100">
             {aboutText}
           </div>
@@ -66,7 +66,7 @@ export default function AboutSection() {
 
         {/* Aileler İçin Neden Uygun? */}
         <div className="mb-10 text-center">
-          <h3 className="heading-3 text-green-700 mb-3">Aileler İçin Neden Uygun?</h3>
+          <h3 className="heading-3 text-green-700 mb-3 drop-shadow-sm">Aileler İçin Neden Uygun?</h3>
           <p className="body-text text-gray-700 max-w-2xl mx-auto">
             Yanı başımızdaki çocuk oyun parkı, ailelerin rahatça vakit geçirmesini sağlıyor. Gözünüz arkada kalmadan rahatça vakit geçirebilirsiniz.
           </p>
@@ -74,7 +74,7 @@ export default function AboutSection() {
 
         {/* Mavi Bayrak Sertifikası */}
         <div className="mb-10 text-center">
-          <h3 className="heading-3 text-blue-700 mb-3">&quot;Mavi Bayrak&quot; Sertifikası</h3>
+          <h3 className="heading-3 text-blue-700 mb-3 drop-shadow-sm">&quot;Mavi Bayrak&quot; Sertifikası</h3>
           <p className="body-text text-gray-700 max-w-2xl mx-auto">
             Restoranımız, toplu gıda tüketiminde hijyen, kalite ve güvenilirliği simgeleyen ‘Mavi Bayrak’ sertifikasına sahiptir.
           </p>

@@ -167,11 +167,11 @@ export default function MenuPreview({ dailySpecial }: MenuPreviewProps) {
             <h3 className="text-2xl md:text-3xl font-bold mb-4">
               GÜNÜN YEMEĞİ
             </h3>
-            <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
+             <div className="bg-white/10 rounded-lg p-6 backdrop-blur-sm">
               <h4 className="text-xl md:text-2xl font-semibold mb-2">
                 {dailySpecial.isim}
               </h4>
-              <p className="text-lg mb-4 opacity-90">
+               <p className="text-lg mb-4 opacity-95 drop-shadow">
                 {dailySpecial.aciklama}
               </p>
               <div className="flex justify-center items-center space-x-4">

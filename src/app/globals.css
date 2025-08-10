@@ -372,6 +372,10 @@
   display: none; /* Chrome, Safari, Opera */
 }
 
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* ===== SKELETON LOADING ANIMASYONLARI ===== */
 @keyframes shimmer {
   0% {

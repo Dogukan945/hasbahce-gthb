@@ -14,6 +14,13 @@ export default function MobileQuickActions() {
           Ara
         </a>
         <a
+          href="/menu"
+          className="flex-1 bg-black text-white py-3 rounded-xl font-semibold text-center shadow-lg active:scale-[0.98]"
+          aria-label="Menüyü aç"
+        >
+          Menü
+        </a>
+        <a
           href={CONTACT_CONSTANTS.FEATURES.MERKEZI_KONUM.LOCATION_LINK}
           target="_blank"
           rel="noopener noreferrer"
