@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { FaSearch, FaTimes } from 'react-icons/fa';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useDeferredValue } from 'react';
 import SkeletonLoader from '@/components/SkeletonLoader';
 import Navbar from './Navbar';
 import { MENU_CONSTANTS } from '@/lib/constants';
@@ -13,18 +13,29 @@ import type { SearchResult } from '@/lib/types';
 export default function MenuContent() {
   const { menuCategories, categoryList, loading } = useMenuData();
   const [searchTerm, setSearchTerm] = useState('');
+  const deferredSearch = useDeferredValue(searchTerm);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   // Arama fonksiyonu
-  const searchResults = useMemo(() => {
-    if (!searchTerm.trim()) return [];
-
-    const searchLower = searchTerm.toLowerCase();
-    const results: SearchResult[] = [];
-
+  // Lookup map: categoryKey -> items[]
+  const categoryItemsMap = useMemo(() => {
+    const map = new Map<string, typeof menuCategories[keyof typeof menuCategories]['items']>();
     categoryList.forEach((categoryKey) => {
       const category = menuCategories[categoryKey as keyof typeof menuCategories];
-      const matchingItems = category.items.filter(item =>
+      map.set(categoryKey, category.items);
+    });
+    return map;
+  }, [menuCategories, categoryList]);
+
+  const searchResults = useMemo(() => {
+    if (!deferredSearch.trim()) return [];
+
+    const searchLower = deferredSearch.toLowerCase();
+    const results: SearchResult[] = [];
+    categoryList.forEach((categoryKey) => {
+      const category = menuCategories[categoryKey as keyof typeof menuCategories];
+      const items = categoryItemsMap.get(categoryKey) || [];
+      const matchingItems = items.filter(item =>
         item.name.toLowerCase().includes(searchLower)
       );
 
@@ -39,7 +50,7 @@ export default function MenuContent() {
     });
 
     return results;
-  }, [searchTerm, menuCategories, categoryList]);
+  }, [deferredSearch, menuCategories, categoryList, categoryItemsMap]);
 
   const clearSearch = () => {
     setSearchTerm('');
@@ -83,14 +94,15 @@ export default function MenuContent() {
         <div className="bg-white shadow-lg -mt-8 mx-4 rounded-2xl relative z-10">
           <div className="max-w-4xl mx-auto p-6">
             <div className="relative">
-              <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-4">
+                 <div className="flex items-center gap-3 bg-gray-50 rounded-xl p-4" role="search">
                 <FaSearch className="text-gray-400 text-xl" />
                 <input
                   type="text"
                   placeholder={MENU_CONSTANTS.SEARCH_PLACEHOLDER}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="flex-1 text-lg px-3 py-2 bg-transparent border-0 outline-none placeholder-gray-400"
+                     className="flex-1 text-lg px-3 py-2 bg-transparent border-0 outline-none placeholder-gray-400"
+                     aria-label="Menüde ara"
                 />
                 {searchTerm && (
                   <button

@@ -252,6 +252,11 @@
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
 }
 
+/* Mobile safe-area for bottom fixed actions */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 /* ===== CUSTOM MENU STYLES ===== */
 /* ===== REFINED PRICE STYLES ===== */
 .price {

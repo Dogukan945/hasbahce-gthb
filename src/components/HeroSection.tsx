@@ -4,6 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FaUtensils } from 'react-icons/fa';
 import Navbar from './Navbar';
+import dynamic from 'next/dynamic';
+const MobileQuickActions = dynamic(() => import('@/components/MobileQuickActions'), { ssr: false });
 import { useState, useRef, useEffect } from 'react';
 import type { DailySpecial } from '@/lib/types';
 
@@ -31,6 +33,8 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
       <Navbar />
       {/* Hero Section - Video Arka Plan ile */}
       <section className="relative min-h-[85vh] flex flex-col items-center justify-center overflow-hidden text-center px-4 pt-8 pb-20">
+        {/* Video preload (layout.tsx head içinde global de yapılabilir) */}
+        <link rel="preload" as="video" href="/hero-video.mp4" />
         {/* Video Arka Plan */}
         <div className="absolute inset-0 z-0">
           <video
@@ -42,6 +46,7 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
             className="w-full h-full object-cover"
             onLoadedData={() => setVideoLoaded(true)}
             style={{ opacity: videoLoaded ? 1 : 0 }}
+            poster="/hasbahce-logo.png"
           >
             <source src="/hero-video.mp4" type="video/mp4" />
           </video>
@@ -96,6 +101,7 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
         </div>
         
       </section>
+      <MobileQuickActions />
     </>
   );
 } 

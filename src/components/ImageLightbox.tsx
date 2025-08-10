@@ -1,7 +1,6 @@
 'use client';
 
-import Lightbox from 'yet-another-react-lightbox';
-import 'yet-another-react-lightbox/styles.css';
+import dynamic from 'next/dynamic';
 import { useState } from 'react';
 import Image from 'next/image';
 
@@ -20,10 +19,24 @@ export default function ImageLightbox({
 }: ImageLightboxProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [stylesLoaded, setStylesLoaded] = useState(false);
+
+  const Lightbox = dynamic(() => import('yet-another-react-lightbox'), {
+    ssr: false,
+    loading: () => null
+  });
 
   const handleImageClick = (index: number) => {
     setLightboxIndex(index);
-    setLightboxOpen(true);
+    // CSS'i ilk açılışta dinamik yükle
+    if (!stylesLoaded) {
+      import('yet-another-react-lightbox/styles.css').then(() => {
+        setStylesLoaded(true);
+        setLightboxOpen(true);
+      });
+    } else {
+      setLightboxOpen(true);
+    }
   };
 
   return (

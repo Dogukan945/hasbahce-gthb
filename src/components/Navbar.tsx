@@ -9,6 +9,8 @@ import { NAVIGATION, ANIMATION_CONSTANTS } from '@/lib/constants';
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  // Remove any stale dynamic variables for framer-motion (ensures clean build)
+  // (No dynamic() usage here)
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -59,13 +61,14 @@ export default function Navbar() {
         </button>
 
         {/* Masaüstü Menü */}
-        <nav className="hidden md:flex gap-2 md:gap-4">
+        <nav className="hidden md:flex gap-2 md:gap-4" aria-label="Ana menü">
           {NAVIGATION.LINKS.map(link => (
             <Link
               key={link.href}
               href={link.href}
               className={`px-3 py-1.5 rounded-lg font-medium text-sm md:text-base transition-colors
                 ${pathname === link.href ? 'bg-red-600 text-white shadow' : 'text-gray-700 hover:bg-red-100 hover:text-red-700'}`}
+              aria-current={pathname === link.href ? 'page' : undefined}
             >
               {link.label}
             </Link>
