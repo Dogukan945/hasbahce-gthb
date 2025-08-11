@@ -58,5 +58,8 @@ export function createPageMetadata({
       title,
       description,
     },
+    alternates: {
+      canonical: `${BASE_URL}${path}`,
+    },
   };
 } 

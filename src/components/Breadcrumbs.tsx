@@ -6,7 +6,13 @@ interface CrumbItem {
   href: string;
 }
 
-export default function Breadcrumbs({ items }: { items: CrumbItem[] }) {
+interface BreadcrumbsProps {
+  items: CrumbItem[];
+  visible?: boolean; // UI'yi göstermek istersen true yap
+  className?: string;
+}
+
+export default function Breadcrumbs({ items, visible = false, className = '' }: BreadcrumbsProps) {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -19,7 +25,7 @@ export default function Breadcrumbs({ items }: { items: CrumbItem[] }) {
   };
 
   return (
-    <nav aria-label="breadcrumb" className="px-4 py-2 text-sm text-gray-600">
+    <nav aria-label="breadcrumb" className={`px-4 py-2 text-sm text-gray-600 ${visible ? 'block' : 'hidden'} ${className}`}>
       <ol className="flex items-center gap-2 flex-wrap">
         {items.map((item, idx) => (
           <li key={item.href} className="flex items-center gap-2">

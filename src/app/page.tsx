@@ -13,9 +13,6 @@ export const metadata = createPageMetadata({
 export default function Home() {
   return (
     <>
-      <head>
-        <link rel="canonical" href="https://hasbahceamasya.com/" />
-      </head>
       <HomeContent />
       <FAQJsonLd />
       <FAQSection />

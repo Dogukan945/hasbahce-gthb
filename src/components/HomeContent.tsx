@@ -7,13 +7,14 @@ import FeatureCard from '@/components/FeatureCard';
 import MenuPreview from '@/components/MenuPreview';
 import ContactSection from '@/components/ContactSection';
 import { useDailySpecial } from '@/hooks/useDailySpecial';
-import { INFO_MESSAGES, ANIMATION_CONSTANTS, CONTACT_CONSTANTS } from '@/lib/constants';
+import { ANIMATION_CONSTANTS, CONTACT_CONSTANTS } from '@/lib/constants';
+import HomeSkeleton from '@/components/HomeSkeleton';
 
 export default function HomeContent() {
   const { dailySpecial, loading } = useDailySpecial();
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">{INFO_MESSAGES.LOADING}</div>;
+    return <HomeSkeleton />;
   }
 
   const effectiveDailySpecial = dailySpecial || {

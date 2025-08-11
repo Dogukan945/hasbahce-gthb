@@ -1,129 +1,45 @@
 import Script from 'next/script';
+import { menuCategories, categoryList } from '@/data/menuData';
 
-interface MenuItem {
-  name: string;
-  description: string;
-  price: string;
-  category: string;
+function normalizePriceToNumber(price: string): string {
+  // "350 TL", "350₺", "+10 TL" gibi değerleri sadece sayı olarak döndür
+  const cleaned = price.replace(/[^0-9.,]/g, '').replace(',', '.');
+  const num = parseFloat(cleaned);
+  return Number.isFinite(num) ? String(num) : '0';
 }
 
-interface MenuSchemaProps {
-  restaurantName?: string;
-  menuUrl?: string;
-  menuItems?: MenuItem[];
-}
+export default function MenuJsonLd() {
+  const sections = categoryList.map((key) => {
+    const cat = menuCategories[key as keyof typeof menuCategories];
+    return {
+      '@type': 'MenuSection',
+      name: cat.name,
+      hasMenuItem: cat.items
+        .filter((it) => /\d/.test(it.price))
+        .map((it) => ({
+          '@type': 'MenuItem',
+          name: it.name,
+          offers: {
+            '@type': 'Offer',
+            price: normalizePriceToNumber(it.price),
+            priceCurrency: 'TRY',
+          },
+        })),
+    };
+  });
 
-export default function MenuJsonLd({
-  restaurantName = "Hasbahçe",
-  menuUrl = "https://hasbahceamasya.com/menu",
-  menuItems = [
-    {
-      name: "Serpme Kahvaltı",
-      description: "Zengin kahvaltı tabağı",
-      price: "350₺",
-      category: "Kahvaltı"
-    },
-    {
-      name: "Adana Kebap",
-      description: "Geleneksel Adana kebap",
-      price: "320₺",
-      category: "Ana Yemek"
-    },
-    {
-      name: "Karışık Pide",
-      description: "Çeşitli malzemelerle",
-      price: "180₺",
-      category: "Pide"
-    },
-    {
-      name: "Künefe",
-      description: "Geleneksel künefe",
-      price: "180₺",
-      category: "Tatlı"
-    }
-  ]
-}: MenuSchemaProps) {
   const schema = {
-    "@context": "https://schema.org",
-    "@type": "FoodEstablishment",
-    "name": restaurantName,
-    "hasMenu": {
-      "@type": "Menu",
-      "url": menuUrl,
-      "hasMenuSection": [
-        {
-          "@type": "MenuSection",
-          "name": "Kahvaltı Çeşitleri",
-          "hasMenuItem": menuItems
-            .filter(item => item.category === "Kahvaltı")
-            .map(item => ({
-              "@type": "MenuItem",
-              "name": item.name,
-              "description": item.description,
-              "offers": {
-                "@type": "Offer",
-                "price": item.price.replace('₺', ''),
-                "priceCurrency": "TRY"
-              }
-            }))
-        },
-        {
-          "@type": "MenuSection",
-          "name": "Ana Yemekler",
-          "hasMenuItem": menuItems
-            .filter(item => item.category === "Ana Yemek")
-            .map(item => ({
-              "@type": "MenuItem",
-              "name": item.name,
-              "description": item.description,
-              "offers": {
-                "@type": "Offer",
-                "price": item.price.replace('₺', ''),
-                "priceCurrency": "TRY"
-              }
-            }))
-        },
-        {
-          "@type": "MenuSection",
-          "name": "Pideler",
-          "hasMenuItem": menuItems
-            .filter(item => item.category === "Pide")
-            .map(item => ({
-              "@type": "MenuItem",
-              "name": item.name,
-              "description": item.description,
-              "offers": {
-                "@type": "Offer",
-                "price": item.price.replace('₺', ''),
-                "priceCurrency": "TRY"
-              }
-            }))
-        },
-        {
-          "@type": "MenuSection",
-          "name": "Tatlılar",
-          "hasMenuItem": menuItems
-            .filter(item => item.category === "Tatlı")
-            .map(item => ({
-              "@type": "MenuItem",
-              "name": item.name,
-              "description": item.description,
-              "offers": {
-                "@type": "Offer",
-                "price": item.price.replace('₺', ''),
-                "priceCurrency": "TRY"
-              }
-            }))
-        }
-      ]
-    }
+    '@context': 'https://schema.org',
+    '@type': 'FoodEstablishment',
+    name: 'Hasbahçe',
+    hasMenu: {
+      '@type': 'Menu',
+      url: 'https://hasbahceamasya.com/menu',
+      hasMenuSection: sections,
+    },
   };
 
   return (
-    <Script
-      id="menu-schema"
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <Script id="menu-schema" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
   );
-} 
+}

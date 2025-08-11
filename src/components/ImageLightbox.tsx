@@ -53,7 +53,7 @@ export default function ImageLightbox({
               src={src}
               alt={altTexts[index] || `Görsel ${index + 1}`}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              className="object-contain bg-gray-100 transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, 33vw"
               loading="lazy"
             />

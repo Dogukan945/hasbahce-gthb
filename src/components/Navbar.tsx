@@ -16,7 +16,7 @@ export default function Navbar() {
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
       <div className="container-custom flex items-center justify-between py-2 px-4 min-h-[48px]">
         <Link href="/" className="flex items-center gap-2 md:gap-3 group">
-          <Image src="/hasbahce-logo.png" alt="Hasbahçe Restoran Amasya - Geleneksel Türk Mutfağı" width={36} height={36} className="object-contain md:w-[60px] md:h-[60px] transition-transform group-hover:scale-105" priority />
+          <Image src="/hasbahce-logo.png" alt="Hasbahçe Restoran Amasya - Geleneksel Türk Mutfağı" width={36} height={36} className="object-contain w-[36px] h-[36px] md:w-[60px] md:h-[60px] transition-transform group-hover:scale-105" priority />
           <div className="flex flex-col">
             <span className="text-base md:text-xl font-bold text-green-800 tracking-wide leading-tight">HASBAHÇE</span>
             <span className="text-[10px] md:text-sm text-gray-600 font-medium">Cafe & Restaurant</span>

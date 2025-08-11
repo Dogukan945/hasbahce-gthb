@@ -4,7 +4,7 @@ export default function ContactSection() {
   return (
     <>
       {/* İletişim Bölümü - Mobil odaklı */}
-      <section className="py-12 md:py-16 bg-gray-50">
+      <section className="py-12 md:py-16 bg-gray-50 bg-pattern">
         <div className="container-custom">
           <div className="text-center mb-8">
             <h2 className="heading-2 text-gray-800 mb-4">

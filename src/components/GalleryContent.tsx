@@ -24,7 +24,7 @@ const galleryImageAltTexts = [
 
 export default function GalleryContent() {
   return (
-    <section className="py-16 bg-white min-h-[80vh]">
+    <section className="py-16 bg-white bg-pattern min-h-[80vh]">
       <div className="max-w-6xl mx-auto px-4">
         <h1 className="heading-1 text-red-700 mb-10 text-center tracking-tight">
           İşletme Görselleri

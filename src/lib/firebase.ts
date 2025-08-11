@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore, type Firestore } from 'firebase/firestore';
+import { hasFirebaseConfig } from './env';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,13 +16,7 @@ let app;
 let db: Firestore | undefined;
 
 try {
-  // Tüm gerekli environment variables mevcut mu kontrol et
-  if (firebaseConfig.apiKey && 
-      firebaseConfig.authDomain && 
-      firebaseConfig.projectId && 
-      firebaseConfig.storageBucket && 
-      firebaseConfig.messagingSenderId && 
-      firebaseConfig.appId) {
+  if (hasFirebaseConfig()) {
     app = initializeApp(firebaseConfig);
     db = getFirestore(app);
   } else {

@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import Image from 'next/image';
 import { FaUtensils } from 'react-icons/fa';
 import Navbar from './Navbar';
@@ -8,6 +7,7 @@ import dynamic from 'next/dynamic';
 const MobileQuickActions = dynamic(() => import('@/components/MobileQuickActions'), { ssr: false });
 import { useState, useRef, useEffect } from 'react';
 import type { DailySpecial } from '@/lib/types';
+import Button from '@/components/ui/Button';
 
 interface HeroSectionProps {
   dailySpecial: DailySpecial;
@@ -79,9 +79,9 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
     <>
       <Navbar />
       {/* Hero Section - Video Arka Plan ile */}
-      <section className="relative min-h-[85vh] flex flex-col items-center justify-center overflow-hidden text-center px-4 pt-8 pb-20">
+      <section className="relative min-h-[85vh] flex flex-col items-center justify-center overflow-hidden text-center px-4 pt-8 pb-20 bg-pattern">
         {/* Video preload (layout.tsx head içinde global de yapılabilir) */}
-        <link rel="preload" as="video" href="/hero-video.mp4" />
+        <link rel="preload" as="image" href="/hasbahce-logo.png" />
         {/* Video Arka Plan */}
         <div className="absolute inset-0 z-0">
           <video
@@ -116,13 +116,10 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
             15 yıllık tecrübe, her damak zevkine hitap eden tatlar, güvenli ortam: Ailece keyifli vakit geçirebileceğiniz bir buluşma noktası.
           </p>
           <div className="flex justify-center mb-8">
-            <Link 
-              href="/menu" 
-              className="btn-accent text-lg md:text-xl px-8 md:px-12 py-4 md:py-5 flex items-center text-center shadow-2xl hover:shadow-green-500/25 transition-all duration-300"
-            >
+            <Button href="/menu" variant="accent" size="lg" className="shadow-2xl hover:shadow-green-500/25">
               <FaUtensils className="mr-3 text-xl md:text-2xl" />
               Menüyü Görüntüle
-            </Link>
+            </Button>
           </div>
 
           {/* Günün Yemeği Kutucuğu - Geliştirilmiş */}

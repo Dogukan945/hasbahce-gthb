@@ -3,6 +3,7 @@ import { useMenuData } from '@/hooks/useMenuData';
 import MenuCarousel from './MenuCarousel';
 import type { DailySpecial } from '@/lib/types';
 import { normalizePriceForDisplay } from '@/lib/utils';
+import Badge from '@/components/ui/Badge';
 
 interface MenuPreviewProps {
   dailySpecial: DailySpecial;
@@ -177,9 +178,7 @@ export default function MenuPreview({ dailySpecial }: MenuPreviewProps) {
               <div className="flex justify-center items-center space-x-4">
                 <span className="text-2xl font-bold">{dailySpecial.fiyat}₺</span>
                 {dailySpecial.ozelFiyat && (
-                  <span className="bg-yellow-400 text-red-800 px-3 py-1 rounded-full text-sm font-semibold">
-                    ÖZEL FİYAT
-                  </span>
+                  <Badge variant="success">ÖZEL FİYAT</Badge>
                 )}
               </div>
             </div>

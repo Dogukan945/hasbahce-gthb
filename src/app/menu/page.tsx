@@ -14,13 +14,10 @@ export default function MenuPage() {
   return (
     <>
       <MenuJsonLd />
-      <head>
-        <link rel="canonical" href="https://hasbahceamasya.com/menu" />
-      </head>
       <Breadcrumbs items={[
         { name: 'Ana Sayfa', href: '/' },
         { name: 'Menü', href: '/menu' }
-      ]} />
+      ]} visible={false} />
       <MenuContent />
     </>
   );

@@ -6,6 +6,7 @@ import WebsiteJsonLd from "@/components/WebsiteJsonLd";
 import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair",
@@ -51,8 +52,7 @@ export const metadata: Metadata = {
     icon: [
       { url: "/favicon.ico", sizes: "any", type: "image/x-icon" },
       { url: "/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" },
-      { url: "/web-app-manifest-512x512.png", sizes: "512x512", type: "image/png" },
-      { url: "/icon1.png", type: "image/png" },
+      { url: "/web-app-manifest-512x512.png", sizes: "512x512", type: "image/png" }
     ],
     apple: "/apple-icon.png",
   },
@@ -76,10 +76,36 @@ export default function RootLayout({
         <GoogleAnalytics />
         <WebsiteJsonLd />
         <JsonLd />
-        {children}
+        <ErrorBoundary>
+          {children}
+        </ErrorBoundary>
         <Footer />
         <CookieConsent />
       </body>
     </html>
   );
+}
+
+// Core Web Vitals raporlama
+export function reportWebVitals(metric: {
+  id: string;
+  name: string;
+  label: 'web-vital' | string;
+  value: number;
+}) {
+  // GA varsa Web Vitals'ı event olarak gönder
+  const w = typeof window !== 'undefined' ? (window as unknown as { gtag?: (...args: unknown[]) => void }) : undefined;
+  if (w && typeof w.gtag === 'function') {
+    w.gtag('event', metric.name, {
+      value: metric.value,
+      event_category: 'Web Vitals',
+      event_label: metric.id,
+      non_interaction: true,
+    });
+  } else {
+    // Geliştirme sırasında konsola yaz
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[WebVitals]', metric.name, Math.round(metric.value), metric.id);
+    }
+  }
 }

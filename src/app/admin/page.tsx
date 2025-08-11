@@ -9,6 +9,7 @@ import ToastNotifications from '@/components/admin/ToastNotifications';
 import DailySpecialForm from '@/components/DailySpecialForm';
 import DailySpecialPreview from '@/components/DailySpecialPreview';
 import MenuPriceManager from '@/components/admin/MenuPriceManager';
+import Tabs, { type TabItem } from '@/components/ui/Tabs';
 import { INFO_MESSAGES, TOAST_TYPES, SUCCESS_MESSAGES, TAB_NAMES } from '@/lib/constants';
 import type { TabType } from '@/lib/types';
 
@@ -84,7 +85,7 @@ export default function AdminPage() {
   }
 
   // Tab listesi
-  const tabs = [
+  const tabs: TabItem[] = [
     { id: TAB_NAMES.DAILY_SPECIAL, label: 'Günün Yemeği' },
     { id: TAB_NAMES.MENU_PRICES, label: 'Menü Fiyatları' },
   ];
@@ -132,25 +133,9 @@ export default function AdminPage() {
       
       <main className="max-w-6xl mx-auto px-4 py-8">
         {/* Tab Navigation */}
-        <div className="mb-8">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabChange(tab.id)}
-                  className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                    activeTab === tab.id
-                      ? 'border-green-500 text-green-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
+          <div className="mb-8">
+            <Tabs items={tabs} activeId={activeTab} onChange={(id) => handleTabChange(id as TabType)} />
           </div>
-        </div>
 
         {/* Tab Content */}
         {renderTabContent()}

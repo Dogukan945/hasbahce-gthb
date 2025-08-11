@@ -13,10 +13,7 @@ export const metadata = createPageMetadata({
 export default function AboutPage() {
   return (
     <>
-      <head>
-        <link rel="canonical" href="https://hasbahceamasya.com/about" />
-      </head>
-      <Breadcrumbs items={[{ name: 'Ana Sayfa', href: '/' }, { name: 'Hakkımızda', href: '/about' }]} />
+      <Breadcrumbs items={[{ name: 'Ana Sayfa', href: '/' }, { name: 'Hakkımızda', href: '/about' }]} visible={false} />
       <Navbar />
       <AboutSection />
     </>

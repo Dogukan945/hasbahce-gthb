@@ -55,7 +55,7 @@ export default function AboutSection() {
   }, []);
 
   return (
-    <section id="about" className="py-16 bg-white">
+    <section id="about" className="py-16 bg-white bg-pattern">
       <div className="max-w-5xl mx-auto px-4">
         <div className="mb-10 text-center">
           <h2 className="heading-2 text-red-700 mb-4 tracking-tight drop-shadow-sm">Hakkımızda</h2>
@@ -85,7 +85,7 @@ export default function AboutSection() {
             images={aboutImages}
             altTexts={aboutImageAltTexts}
             className="grid grid-cols-1 md:grid-cols-3 gap-6"
-            aspectRatio="h-56"
+            aspectRatio="aspect-[4/3]"
           />
         </div>
       </div>

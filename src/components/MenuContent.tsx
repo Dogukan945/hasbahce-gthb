@@ -7,6 +7,7 @@ import SkeletonLoader from '@/components/SkeletonLoader';
 import Navbar from './Navbar';
 import { MENU_CONSTANTS } from '@/lib/constants';
 import { normalizePriceForDisplay } from '@/lib/utils';
+import Badge from '@/components/ui/Badge';
 import { useMenuData } from '@/hooks/useMenuData';
 import type { SearchResult } from '@/lib/types';
 
@@ -21,6 +22,7 @@ export default function MenuContent() {
   const [indicatorWidth, setIndicatorWidth] = useState(0);
   const [scrollHintLeft, setScrollHintLeft] = useState(true);
   const [scrollHintRight, setScrollHintRight] = useState(true);
+  const sectionRefs = useRef(new Map<string, HTMLElement>());
 
   // Arama fonksiyonu
   // Lookup map: categoryKey -> items[]
@@ -102,10 +104,34 @@ export default function MenuContent() {
     };
   }, []);
 
+  // Scrollspy: görünür kategoriye göre aktif sekmeyi güncelle
+  useEffect(() => {
+    if (searchTerm) return; // arama açıkken scrollspy devre dışı
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => (a.boundingClientRect.top < b.boundingClientRect.top ? -1 : 1));
+        if (visible.length > 0) {
+          const id = visible[0].target.getAttribute('id');
+          if (id && id !== selectedCategory) setSelectedCategory(id);
+        }
+      },
+      {
+        root: null,
+        rootMargin: '0px 0px -70% 0px', // üstte görününce tetikle
+        threshold: 0.01,
+      }
+    );
+    sectionRefs.current.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
+
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50">
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-50 bg-pattern">
         {/* Hero Section */}
         <div className="bg-gradient-to-r from-red-600 to-red-700 text-white py-16">
           <div className="max-w-6xl mx-auto px-4 text-center">
@@ -207,7 +233,7 @@ export default function MenuContent() {
           </div>
 
         {/* Menü İçeriği */}
-        <div className="max-w-6xl mx-auto px-4 pb-16">
+        <div className="max-w-6xl mx-auto px-4 pb-16 cv-auto">
           {loading ? (
             <div className="space-y-8">
               {[...Array(4)].map((_, i) => (
@@ -219,7 +245,14 @@ export default function MenuContent() {
             <div className="space-y-8">
               {searchResults.length > 0 ? (
                 searchResults.map((result) => (
-                  <div key={result.categoryKey} id={result.categoryKey} className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300">
+                  <div
+                    key={result.categoryKey}
+                    id={result.categoryKey}
+                    ref={(el) => {
+                      if (el) sectionRefs.current.set(result.categoryKey, el);
+                    }}
+                    className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300"
+                  >
                     <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-6">
                       <h2 className="heading-2 mb-2">{result.categoryName}</h2>
                       <p className="body-text text-red-100">{result.categoryDescription}</p>
@@ -229,10 +262,10 @@ export default function MenuContent() {
                         {result.items.map((item, index) => (
                           <div key={index} className="group flex justify-between items-center gap-4 p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer active:scale-[0.99]">
                             <div className="flex-1">
-                              <h3 className="font-bold text-lg text-gray-800 group-hover:text-red-700 transition-colors duration-200 line-clamp-2">{item.name}</h3>
+                              <h3 className="font-semibold text-[17px] leading-6 tracking-[0.005em] text-gray-900 group-hover:text-red-700 transition-colors duration-200 line-clamp-2">{item.name}</h3>
                             </div>
                             <div className="text-right">
-                              <span className="inline-block font-bold text-lg md:text-2xl text-green-700 bg-green-50 border border-green-200 px-3 py-1 rounded-lg group-hover:text-green-800 transition-all duration-200">{normalizePriceForDisplay(item.price)}</span>
+                              <Badge variant="success" className="text-base md:text-2xl">{normalizePriceForDisplay(item.price)}</Badge>
                             </div>
                           </div>
                         ))}
@@ -293,7 +326,14 @@ export default function MenuContent() {
               {categoryList.map((categoryKey) => {
                 const category = menuCategories[categoryKey as keyof typeof menuCategories];
                 return (
-                  <div key={categoryKey} id={categoryKey} className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300">
+                  <div
+                    key={categoryKey}
+                    id={categoryKey}
+                    ref={(el) => {
+                      if (el) sectionRefs.current.set(categoryKey, el);
+                    }}
+                    className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300"
+                  >
                     <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-6">
                       <h2 className="heading-2 mb-2">{category.name}</h2>
                       <p className="body-text text-red-100">{category.description}</p>
