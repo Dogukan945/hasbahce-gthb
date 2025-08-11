@@ -1,6 +1,5 @@
-import { initializeApp } from 'firebase/app';
-import { getFirestore, type Firestore } from 'firebase/firestore';
 import { hasFirebaseConfig } from './env';
+import type { Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -11,19 +10,27 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID
 };
 
-// Environment variables eksikse Firebase'i başlatma
-let app;
-let db: Firestore | undefined;
+let dbPromise: Promise<Firestore | undefined> | null = null;
 
-try {
-  if (hasFirebaseConfig()) {
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-  } else {
-    console.warn('Firebase environment variables eksik. Firebase devre dışı.');
+export async function getDb(): Promise<Firestore | undefined> {
+  if (!hasFirebaseConfig()) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn('Firebase environment variables eksik. Firebase devre dışı.');
+    }
+    return undefined;
   }
-} catch (error) {
-  console.error('Firebase başlatma hatası:', error);
+  if (!dbPromise) {
+    dbPromise = (async () => {
+      try {
+        const { initializeApp } = await import('firebase/app');
+        const { getFirestore } = await import('firebase/firestore');
+        const app = initializeApp(firebaseConfig);
+        return getFirestore(app);
+      } catch (error) {
+        console.error('Firebase dinamik yükleme hatası:', error);
+        return undefined;
+      }
+    })();
+  }
+  return dbPromise;
 }
-
-export { db }; 

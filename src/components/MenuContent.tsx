@@ -20,6 +20,7 @@ export default function MenuContent() {
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
   const [indicatorLeft, setIndicatorLeft] = useState(0);
   const [indicatorWidth, setIndicatorWidth] = useState(0);
+  const indicatorRafId = useRef<number | null>(null);
   const [scrollHintLeft, setScrollHintLeft] = useState(true);
   const [scrollHintRight, setScrollHintRight] = useState(true);
   const sectionRefs = useRef(new Map<string, HTMLElement>());
@@ -74,33 +75,52 @@ export default function MenuContent() {
     setSelectedCategory(null);
   };
 
-  // Active indicator position calculation
+  // Active indicator position calculation (rAF throttled to avoid forced reflow chaining)
   useEffect(() => {
-    const activeKey = selectedCategory || categoryList[0];
-    const btn = buttonRefs.current.get(activeKey);
-    const container = buttonsContainerRef.current;
-    if (btn && container) {
-      const btnRect = btn.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-      setIndicatorLeft(btnRect.left - containerRect.left);
-      setIndicatorWidth(btnRect.width);
+    if (indicatorRafId.current) {
+      cancelAnimationFrame(indicatorRafId.current);
     }
+    indicatorRafId.current = requestAnimationFrame(() => {
+      const activeKey = selectedCategory || categoryList[0];
+      const btn = buttonRefs.current.get(activeKey);
+      const container = buttonsContainerRef.current;
+      if (btn && container) {
+        const btnRect = btn.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const nextLeft = btnRect.left - containerRect.left;
+        const nextWidth = btnRect.width;
+        setIndicatorLeft((prev) => (prev !== nextLeft ? nextLeft : prev));
+        setIndicatorWidth((prev) => (prev !== nextWidth ? nextWidth : prev));
+      }
+    });
+    return () => {
+      if (indicatorRafId.current) cancelAnimationFrame(indicatorRafId.current);
+    };
   }, [selectedCategory, categoryList]);
 
-  // Scroll hint shadow logic
+  // Scroll hint shadow logic (rAF-throttled)
   useEffect(() => {
     const el = buttonsContainerRef.current;
     if (!el) return;
-    const updateHints = () => {
-      setScrollHintLeft(el.scrollLeft > 0);
-      setScrollHintRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+    let ticking = false;
+    const schedule = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        const scrollLeft = el.scrollLeft;
+        const clientWidth = el.clientWidth;
+        const scrollWidth = el.scrollWidth;
+        setScrollHintLeft(scrollLeft > 0);
+        setScrollHintRight(scrollLeft + clientWidth < scrollWidth - 1);
+      });
     };
-    updateHints();
-    el.addEventListener('scroll', updateHints, { passive: true } as AddEventListenerOptions);
-    window.addEventListener('resize', updateHints);
+    schedule();
+    el.addEventListener('scroll', schedule, { passive: true } as AddEventListenerOptions);
+    window.addEventListener('resize', schedule);
     return () => {
-      el.removeEventListener('scroll', updateHints as EventListener);
-      window.removeEventListener('resize', updateHints);
+      el.removeEventListener('scroll', schedule as EventListener);
+      window.removeEventListener('resize', schedule);
     };
   }, []);
 
@@ -224,8 +244,8 @@ export default function MenuContent() {
                 )}
                 {/* Active indicator bar */}
                 <div
-                  className="absolute bottom-0 h-1 bg-gradient-to-r from-red-600 to-red-700 rounded-full transition-all duration-200"
-                  style={{ left: indicatorLeft, width: indicatorWidth }}
+                  className="absolute bottom-0 h-1 bg-gradient-to-r from-red-600 to-red-700 rounded-full transition-all duration-200 will-change-transform"
+                  style={{ transform: `translateX(${indicatorLeft}px)`, width: indicatorWidth }}
                 />
               </div>
             </div>

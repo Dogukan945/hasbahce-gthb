@@ -1,4 +1,4 @@
-import { db } from './firebase';
+import { getDb } from './firebase';
 import type { MenuPrices } from './types';
 import { FIREBASE_CONSTANTS } from './constants';
 import {
@@ -9,6 +9,7 @@ import {
 } from 'firebase/firestore';
 
 export async function getMenuPrices(): Promise<MenuPrices | null> {
+  const db = await getDb();
   if (!db) {
     console.warn('Firebase bağlantısı yok. Menü fiyatları alınamıyor.');
     return null;
@@ -26,6 +27,7 @@ export async function getMenuPrices(): Promise<MenuPrices | null> {
 }
 
 export async function setMenuPrices(prices: MenuPrices): Promise<void> {
+  const db = await getDb();
   if (!db) {
     console.warn('Firebase bağlantısı yok. Menü fiyatları kaydedilemiyor.');
     return;
@@ -40,7 +42,8 @@ export async function setMenuPrices(prices: MenuPrices): Promise<void> {
   }
 }
 
-export function subscribeToMenuPrices(callback: (data: MenuPrices | null) => void) {
+export async function subscribeToMenuPrices(callback: (data: MenuPrices | null) => void) {
+  const db = await getDb();
   if (!db) {
     console.warn('Firebase bağlantısı yok. Menü fiyatları aboneliği yapılamıyor.');
     callback(null);

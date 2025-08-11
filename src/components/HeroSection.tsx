@@ -80,8 +80,9 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
       <Navbar />
       {/* Hero Section - Video Arka Plan ile */}
       <section className="relative min-h-[85vh] flex flex-col items-center justify-center overflow-hidden text-center px-4 pt-8 pb-20 bg-pattern">
-        {/* Video preload (layout.tsx head içinde global de yapılabilir) */}
+        {/* Preload poster and video for faster LCP discovery */}
         <link rel="preload" as="image" href="/hasbahce-logo.png" />
+        <link rel="preload" as="video" href="/hero-video.mp4" />
         {/* Video Arka Plan */}
         <div className="absolute inset-0 z-0">
           <video
@@ -90,10 +91,10 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
             loop
             muted
             playsInline
+            preload={playEnabled ? 'auto' : 'none'}
             className="w-full h-full object-cover"
             onLoadedData={() => setVideoLoaded(true)}
             style={{ opacity: videoLoaded ? 1 : 0 }}
-            preload={playEnabled ? 'auto' : 'none'}
             poster="/hasbahce-logo.png"
           >
             <source src={selectedSrc} type="video/mp4" />

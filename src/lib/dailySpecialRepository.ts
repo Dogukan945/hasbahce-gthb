@@ -1,4 +1,4 @@
-import { db } from './firebase';
+import { getDb } from './firebase';
 import type { DailySpecial } from './types';
 import { FIREBASE_CONSTANTS } from './constants';
 import {
@@ -9,6 +9,7 @@ import {
 } from 'firebase/firestore';
 
 export async function getDailySpecial(): Promise<DailySpecial | null> {
+  const db = await getDb();
   if (!db) {
     console.warn('Firebase bağlantısı yok. Günlük yemek verisi alınamıyor.');
     return null;
@@ -26,6 +27,7 @@ export async function getDailySpecial(): Promise<DailySpecial | null> {
 }
 
 export async function setDailySpecial(data: DailySpecial): Promise<void> {
+  const db = await getDb();
   if (!db) {
     console.warn('Firebase bağlantısı yok. Günlük yemek verisi kaydedilemiyor.');
     return;
@@ -40,7 +42,8 @@ export async function setDailySpecial(data: DailySpecial): Promise<void> {
   }
 }
 
-export function subscribeToDailySpecial(callback: (data: DailySpecial | null) => void) {
+export async function subscribeToDailySpecial(callback: (data: DailySpecial | null) => void) {
+  const db = await getDb();
   if (!db) {
     console.warn('Firebase bağlantısı yok. Günlük yemek aboneliği yapılamıyor.');
     // Firebase yoksa hemen null döndür

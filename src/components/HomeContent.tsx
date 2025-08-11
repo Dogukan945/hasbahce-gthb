@@ -1,13 +1,12 @@
 'use client';
 
 import { FaUtensils, FaMapMarkerAlt, FaPhone } from 'react-icons/fa';
-import { motion } from 'framer-motion';
 import HeroSection from '@/components/HeroSection';
 import FeatureCard from '@/components/FeatureCard';
 import MenuPreview from '@/components/MenuPreview';
 import ContactSection from '@/components/ContactSection';
 import { useDailySpecial } from '@/hooks/useDailySpecial';
-import { ANIMATION_CONSTANTS, CONTACT_CONSTANTS } from '@/lib/constants';
+import { CONTACT_CONSTANTS } from '@/lib/constants';
 import HomeSkeleton from '@/components/HomeSkeleton';
 
 export default function HomeContent() {
@@ -33,12 +32,7 @@ export default function HomeContent() {
       <section className="py-12 md:py-16 bg-gray-50">
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: ANIMATION_CONSTANTS.DURATION.SLOW, delay: ANIMATION_CONSTANTS.DELAY.SMALL }}
-            >
+            <div>
               <FeatureCard
                 icon={<FaUtensils className="text-white text-2xl md:text-3xl" />}
                 title={CONTACT_CONSTANTS.FEATURES.TAZE_MALZEMELER.TITLE}
@@ -46,33 +40,23 @@ export default function HomeContent() {
                 linkText={CONTACT_CONSTANTS.FEATURES.TAZE_MALZEMELER.LINK_TEXT}
                 linkHref={CONTACT_CONSTANTS.FEATURES.TAZE_MALZEMELER.LINK_HREF}
               />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: ANIMATION_CONSTANTS.DURATION.SLOW, delay: ANIMATION_CONSTANTS.DELAY.MEDIUM }}
-            >
+            </div>
+            <div>
               <FeatureCard
                 icon={<FaMapMarkerAlt className="text-white text-2xl md:text-3xl" />}
                 title={CONTACT_CONSTANTS.FEATURES.MERKEZI_KONUM.TITLE}
                 description={CONTACT_CONSTANTS.FEATURES.MERKEZI_KONUM.DESCRIPTION}
                 locationLink={CONTACT_CONSTANTS.FEATURES.MERKEZI_KONUM.LOCATION_LINK}
               />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: ANIMATION_CONSTANTS.DURATION.SLOW, delay: ANIMATION_CONSTANTS.DELAY.LARGE }}
-            >
+            </div>
+            <div>
               <FeatureCard
                 icon={<FaPhone className="text-white text-2xl md:text-3xl" />}
                 title={CONTACT_CONSTANTS.FEATURES.ILETISIM.TITLE}
                 description={CONTACT_CONSTANTS.FEATURES.ILETISIM.DESCRIPTION}
                 phoneNumber={CONTACT_CONSTANTS.FEATURES.ILETISIM.PHONE}
               />
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

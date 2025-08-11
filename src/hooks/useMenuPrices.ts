@@ -8,11 +8,12 @@ export function useMenuPrices() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = subscribeToMenuPrices((data) => {
+    let unsub: (() => void) | undefined;
+    subscribeToMenuPrices((data) => {
       setMenuPricesState(data);
       setLoading(false);
-    });
-    return () => unsubscribe();
+    }).then((u) => { unsub = u; }).catch(() => {/* noop */});
+    return () => { if (unsub) unsub(); };
   }, []);
 
   const saveMenuPrices = async (prices: MenuPrices) => {

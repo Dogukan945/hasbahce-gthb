@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import CookieConsent from "@/components/CookieConsent";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import DeferredStyles from "@/components/DeferredStyles";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair",
@@ -71,8 +72,10 @@ export default function RootLayout({
         <meta name="author" content="Hasbahçe Restoran" />
         <meta name="theme-color" content="#16a34a" />
         <meta name="apple-mobile-web-app-title" content="Hasbahçe" />
+        <link rel="preload" as="video" href="/hero-video.mp4" />
       </head>
       <body className={`${playfairDisplay.variable} ${inter.variable} font-sans antialiased`}>
+        <DeferredStyles />
         <GoogleAnalytics />
         <WebsiteJsonLd />
         <JsonLd />

@@ -1,7 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ANIMATION_CONSTANTS } from '@/lib/constants';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -82,17 +80,7 @@ const FeatureCard: React.FC<FeatureCardProps> = React.memo(({
     </div>
   );
 
-  return (
-    <motion.div
-      whileHover={{ 
-        y: -5,
-        transition: { duration: ANIMATION_CONSTANTS.DURATION.FAST }
-      }}
-      className="h-full"
-    >
-      {cardContent}
-    </motion.div>
-  );
+  return <div className="h-full transition-transform duration-200 hover:-translate-y-1">{cardContent}</div>;
 });
 
 FeatureCard.displayName = 'FeatureCard';

@@ -7,11 +7,12 @@ export function useDailySpecial() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = subscribeToDailySpecial((data) => {
+    let unsub: (() => void) | undefined;
+    subscribeToDailySpecial((data) => {
       setDailySpecial(data);
       setLoading(false);
-    });
-    return () => unsubscribe();
+    }).then((u) => { unsub = u; }).catch(() => {/* noop */});
+    return () => { if (unsub) unsub(); };
   }, []);
 
   return { dailySpecial, loading };
