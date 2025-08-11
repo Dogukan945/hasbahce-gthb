@@ -98,8 +98,8 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
           >
             <source src={selectedSrc} type="video/mp4" />
           </video>
-          {/* Video yüklenemezse veya mobilde fallback gradient */}
-          <div className="absolute inset-0 bg-gradient-to-b from-red-600/80 via-red-700/60 to-red-800/80"></div>
+          {/* Video yüklenemezse veya mobilde fallback gradient - mobilde opaklığı bir kademe artırıldı */}
+          <div className="absolute inset-0 bg-gradient-to-b from-red-600/90 via-red-700/70 to-red-800/90"></div>
         </div>
 
         {/* İçerik */}
@@ -112,7 +112,7 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
             className="object-contain mb-6 md:w-[260px] md:h-[260px] lg:w-[320px] lg:h-[320px] drop-shadow-2xl" 
             priority 
           />
-          <p className="body-text-large md:text-xl lg:text-2xl mb-6 font-light max-w-2xl mx-auto leading-relaxed text-white/95 drop-shadow-lg">
+          <p className="body-text-large md:text-xl lg:text-2xl mb-6 font-light max-w-2xl mx-auto leading-relaxed text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
             15 yıllık tecrübe, her damak zevkine hitap eden tatlar, güvenli ortam: Ailece keyifli vakit geçirebileceğiniz bir buluşma noktası.
           </p>
           <div className="flex justify-center mb-8">

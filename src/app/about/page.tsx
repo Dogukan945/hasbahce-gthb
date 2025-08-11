@@ -1,6 +1,8 @@
 import Navbar from '@/components/Navbar';
 import AboutSection from '@/components/AboutSection';
 import { createPageMetadata } from '@/lib/metadata';
+import dynamic from 'next/dynamic';
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
 
 export const metadata = createPageMetadata({
   title: "Hakkımızda | Hasbahçe Amasya",
@@ -14,6 +16,7 @@ export default function AboutPage() {
       <head>
         <link rel="canonical" href="https://hasbahceamasya.com/about" />
       </head>
+      <Breadcrumbs items={[{ name: 'Ana Sayfa', href: '/' }, { name: 'Hakkımızda', href: '/about' }]} />
       <Navbar />
       <AboutSection />
     </>

@@ -1,6 +1,8 @@
 import Navbar from '@/components/Navbar';
 import GalleryContent from '@/components/GalleryContent';
 import { createPageMetadata } from '@/lib/metadata';
+import dynamic from 'next/dynamic';
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
 
 export const metadata = createPageMetadata({
   title: "Görseller | Hasbahçe Amasya",
@@ -15,6 +17,7 @@ export default function GalleryPage() {
         <link rel="canonical" href="https://hasbahceamasya.com/gallery" />
       </head>
       <Navbar />
+      <Breadcrumbs items={[{ name: 'Ana Sayfa', href: '/' }, { name: 'Görseller', href: '/gallery' }]} />
       <GalleryContent />
     </>
   );

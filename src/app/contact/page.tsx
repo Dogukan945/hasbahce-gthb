@@ -1,6 +1,8 @@
 import Navbar from '@/components/Navbar';
 import ContactSection from '@/components/ContactSection';
 import { createPageMetadata } from '@/lib/metadata';
+import dynamic from 'next/dynamic';
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
 
 export const metadata = createPageMetadata({
   title: 'İletişim | Hasbahçe Amasya',
@@ -15,6 +17,7 @@ export default function ContactPage() {
         <link rel="canonical" href="https://hasbahceamasya.com/contact" />
       </head>
       <Navbar />
+      <Breadcrumbs items={[{ name: 'Ana Sayfa', href: '/' }, { name: 'İletişim', href: '/contact' }]} />
       <section className="py-12 bg-white">
         <div className="max-w-2xl mx-auto px-4 text-center mb-10">
           <h1 className="heading-2 text-green-700 mb-4">İletişim</h1>

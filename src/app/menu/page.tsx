@@ -1,6 +1,8 @@
 import MenuContent from '@/components/MenuContent';
 import MenuJsonLd from '@/components/MenuJsonLd';
 import { createPageMetadata } from '@/lib/metadata';
+import dynamic from 'next/dynamic';
+const Breadcrumbs = dynamic(() => import('@/components/Breadcrumbs'));
 
 export const metadata = createPageMetadata({
   title: "Menü | Hasbahçe Amasya - Kahvaltı, Pide, Kebap, Tatlı Fiyatları",
@@ -15,6 +17,10 @@ export default function MenuPage() {
       <head>
         <link rel="canonical" href="https://hasbahceamasya.com/menu" />
       </head>
+      <Breadcrumbs items={[
+        { name: 'Ana Sayfa', href: '/' },
+        { name: 'Menü', href: '/menu' }
+      ]} />
       <MenuContent />
     </>
   );

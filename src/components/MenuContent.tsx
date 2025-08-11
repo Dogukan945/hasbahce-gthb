@@ -19,6 +19,8 @@ export default function MenuContent() {
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
   const [indicatorLeft, setIndicatorLeft] = useState(0);
   const [indicatorWidth, setIndicatorWidth] = useState(0);
+  const [scrollHintLeft, setScrollHintLeft] = useState(true);
+  const [scrollHintRight, setScrollHintRight] = useState(true);
 
   // Arama fonksiyonu
   // Lookup map: categoryKey -> items[]
@@ -83,6 +85,23 @@ export default function MenuContent() {
     }
   }, [selectedCategory, categoryList]);
 
+  // Scroll hint shadow logic
+  useEffect(() => {
+    const el = buttonsContainerRef.current;
+    if (!el) return;
+    const updateHints = () => {
+      setScrollHintLeft(el.scrollLeft > 0);
+      setScrollHintRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+    };
+    updateHints();
+    el.addEventListener('scroll', updateHints, { passive: true } as AddEventListenerOptions);
+    window.addEventListener('resize', updateHints);
+    return () => {
+      el.removeEventListener('scroll', updateHints as EventListener);
+      window.removeEventListener('resize', updateHints);
+    };
+  }, []);
+
   return (
     <>
       <Navbar />
@@ -137,32 +156,45 @@ export default function MenuContent() {
         {/* Kategoriler Çubuğu */}
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="bg-white rounded-2xl shadow-lg p-0 sticky top-[52px] z-30">
-            <div className="overflow-x-auto no-scrollbar">
-              <div ref={buttonsContainerRef} className="relative flex gap-2 px-4 pt-3 pb-4 justify-start">
+            <div className="relative">
+              {/* Left hint */}
+              {scrollHintLeft && (
+                <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-white to-transparent z-10" />
+              )}
+              {/* Right hint */}
+              {scrollHintRight && (
+                <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white to-transparent z-10" />
+              )}
+              <div ref={buttonsContainerRef} className="overflow-x-auto no-scrollbar scroll-touch relative flex gap-2 px-4 pt-3 pb-4 justify-start" aria-label="Menü kısayolları">
               {categoryList.map((categoryKey) => {
                 const category = menuCategories[categoryKey as keyof typeof menuCategories];
                 return (
-                  <button
+                    <a
                     key={categoryKey}
-                      ref={(el) => { if (el) buttonRefs.current.set(categoryKey, el); }}
+                      ref={(el) => { if (el) buttonRefs.current.set(categoryKey, el as unknown as HTMLButtonElement); }}
+                      href={`#${categoryKey}`}
                     onClick={() => handleCategoryClick(categoryKey)}
                       className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-red-500 ${
                       selectedCategory === categoryKey
                         ? 'bg-red-600 text-white shadow-lg scale-105'
                         : 'bg-gray-100 text-gray-700 hover:bg-red-100 hover:text-red-700'
                     }`}
+                      role="button"
+                      aria-label={`${category.name} kategorisine git`}
                   >
                     {category.name}
-                  </button>
+                    </a>
                 );
               })}
                 {selectedCategory && (
-                  <button
+                  <a
                     onClick={clearCategory}
                     className="px-4 py-2 rounded-lg font-semibold text-sm bg-gray-200 text-gray-700 hover:bg-gray-300 transition-all duration-300 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-red-500"
+                    href="#top"
+                    role="button"
                   >
                     {MENU_CONSTANTS.CATEGORY.SHOW_ALL}
-                  </button>
+                  </a>
                 )}
                 {/* Active indicator bar */}
                 <div
@@ -187,7 +219,7 @@ export default function MenuContent() {
             <div className="space-y-8">
               {searchResults.length > 0 ? (
                 searchResults.map((result) => (
-                  <div key={result.categoryKey} className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300">
+                  <div key={result.categoryKey} id={result.categoryKey} className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300">
                     <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-6">
                       <h2 className="heading-2 mb-2">{result.categoryName}</h2>
                       <p className="body-text text-red-100">{result.categoryDescription}</p>
@@ -261,7 +293,7 @@ export default function MenuContent() {
               {categoryList.map((categoryKey) => {
                 const category = menuCategories[categoryKey as keyof typeof menuCategories];
                 return (
-                  <div key={categoryKey} className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300">
+                  <div key={categoryKey} id={categoryKey} className="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-[1.02] transition-transform duration-300">
                     <div className="bg-gradient-to-r from-red-600 to-red-700 text-white p-6">
                       <h2 className="heading-2 mb-2">{category.name}</h2>
                       <p className="body-text text-red-100">{category.description}</p>

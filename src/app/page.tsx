@@ -1,5 +1,8 @@
 import HomeContent from '@/components/HomeContent';
 import { createPageMetadata } from '@/lib/metadata';
+import dynamic from 'next/dynamic';
+const FAQSection = dynamic(() => import('@/components/FAQSection'));
+const FAQJsonLd = dynamic(() => import('@/components/FAQJsonLd'));
 
 export const metadata = createPageMetadata({
   title: "Hasbahçe | Amasya'nın En İyi Restoranı - Kahvaltı, Pide, Kebap",
@@ -14,6 +17,8 @@ export default function Home() {
         <link rel="canonical" href="https://hasbahceamasya.com/" />
       </head>
       <HomeContent />
+      <FAQJsonLd />
+      <FAQSection />
     </>
   );
 }

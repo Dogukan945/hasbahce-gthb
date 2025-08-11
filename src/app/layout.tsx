@@ -21,14 +21,14 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Hasbahçe Amasya",
-  description: "Hasbahçe, aile dostu bir lokanta olarak özenle hazırladığımız pide ve kebap çeşitlerimizle misafirlerimize samimi bir ortamda kaliteli lezzetler sunuyoruz.",
+  description: "Amasya’da Irmak Kenarında Yemek Keyfi. Aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri.",
   openGraph: {
     type: "website",
     locale: "tr_TR",
     url: "https://hasbahceamasya.com",
     siteName: "Hasbahçe",
-    title: "Hasbahçe | Amasya'nın En İyi Restoranı",
-    description: "Amasya'da Yeşilırmak kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri.",
+    title: "Hasbahçe | Amasya’da Irmak Kenarında Yemek Keyfi",
+    description: "Amasya’da Irmak Kenarında Yemek Keyfi. Aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri.",
     images: [
       {
         url: "https://hasbahceamasya.com/hasbahce-logo.png",
@@ -43,8 +43,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     site: "@hasbahceamasya",
     creator: "@hasbahceamasya",
-    title: "Hasbahçe | Amasya'nın En İyi Restoranı",
-    description: "Amasya'da Yeşilırmak kenarında aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri.",
+    title: "Hasbahçe | Amasya’da Irmak Kenarında Yemek Keyfi",
+    description: "Amasya’da Irmak Kenarında Yemek Keyfi. Aile dostu ortamda kahvaltı, pide, kebap ve geleneksel Türk yemekleri.",
     images: ["https://hasbahceamasya.com/hasbahce-logo.png"],
   },
   icons: {
