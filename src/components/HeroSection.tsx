@@ -17,7 +17,7 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [selectedSrc, setSelectedSrc] = useState<string>("/hero-video.mp4");
-  const [playEnabled, setPlayEnabled] = useState<boolean>(true);
+  // autoplay devre dışı; poster LCP için yeterli
 
   useEffect(() => {
     // Data saver / reduced data kontrolü
@@ -28,7 +28,6 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
       ? window.matchMedia('(prefers-reduced-data: reduce)').matches
       : false;
     if (saveData || prefersReducedData) {
-      setPlayEnabled(false);
       return; // sadece poster gösterilecek
     }
 
@@ -66,7 +65,10 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
       window.removeEventListener('touchstart', tryPlay);
       window.removeEventListener('click', tryPlay);
     };
-    tryPlay();
+    const idle = (cb: () => void) => (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout?: number }) => number }).requestIdleCallback ?
+      (window as unknown as { requestIdleCallback: (cb: () => void, opts?: { timeout?: number }) => number }).requestIdleCallback(cb, { timeout: 2000 }) :
+      window.setTimeout(cb, 1000);
+    idle(tryPlay);
     window.addEventListener('touchstart', tryPlay, { passive: true } as AddEventListenerOptions);
     window.addEventListener('click', tryPlay, { passive: true } as AddEventListenerOptions);
     return () => {
@@ -80,18 +82,17 @@ export default function HeroSection({ dailySpecial }: HeroSectionProps) {
       <Navbar />
       {/* Hero Section - Video Arka Plan ile */}
       <section className="relative min-h-[85vh] flex flex-col items-center justify-center overflow-hidden text-center px-4 pt-8 pb-20 bg-pattern">
-        {/* Preload poster and video for faster LCP discovery */}
+        {/* Preload only poster to keep LCP fast */}
         <link rel="preload" as="image" href="/hasbahce-logo.png" />
-        <link rel="preload" as="video" href="/hero-video.mp4" />
         {/* Video Arka Plan */}
         <div className="absolute inset-0 z-0">
           <video
             ref={videoRef}
-            autoPlay={playEnabled}
+            autoPlay={false}
             loop
             muted
             playsInline
-            preload={playEnabled ? 'auto' : 'none'}
+            preload="none"
             className="w-full h-full object-cover"
             onLoadedData={() => setVideoLoaded(true)}
             style={{ opacity: videoLoaded ? 1 : 0 }}
